@@ -22,3 +22,7 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+# config :logger, handle_sasl_reports: true
+
+config :blur, :autojoin, ["#rockerboo"]
