@@ -14,8 +14,8 @@ defmodule Blur.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :exirc],
-     mod: {Blur, []}]
+    [applications: [:logger, :exirc, :con_cache],
+     mod: {Blur.IRC.App, [host: "irc.twitch.tv", port: 6667]}]
   end
 
   # Dependencies can be Hex packages:
@@ -28,6 +28,10 @@ defmodule Blur.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    [{:exirc, github: "bitwalker/exirc"}]
+    [{:exirc, github: "bitwalker/exirc"},
+     {:con_cache, "~> 0.8.0"},
+     {:socket, "~> 0.3.0"},
+     {:amnesia, github: "meh/amnesia"},
+     {:poison, "~> 1.4.0"}]
   end
 end

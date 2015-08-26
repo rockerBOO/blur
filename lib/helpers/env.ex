@@ -1,12 +1,8 @@
 defmodule Blur.Env do
-  defmodule Error do
-    defexception [:message]
-  end
-
 	def fetch!(key) when is_atom(key) do
     case fetch(key) do
       value -> value
-      error -> raise %Error{message: "Environmetal variable not found"}
+      error -> raise "Environmetal variable not found"
     end
   end
 
@@ -15,6 +11,14 @@ defmodule Blur.Env do
       :chat_key     -> System.get_env("TWITCH_CHAT_KEY")
       :access_token -> System.get_env("TWITCH_ACCESS_TOKEN")
       :username     -> System.get_env("TWITCH_USERNAME")
+    end
+  end
+
+  def validate! do
+    IO.inspect System.get_env("TWITCH_USERNAME")
+
+    if System.get_env("TWITCH_USERNAME") == nil do
+      raise "Environmetal variables not found"
     end
   end
 end

@@ -34,12 +34,15 @@ defmodule Blur.IRC do
   def connect(client) do
     %{host: host, port: port} = %Blur.Connection.State{}
 
-    client |> ExIrc.Client.connect!(host, port)
+    client
+    |> ExIrc.Client.connect!(host, port)
   end
 
-  def login(client, nick, pass) do
-    client |> ExIrc.Client.logon(pass, nick, nick, nick)
-  end
+  def login(client, nick, pass),
+  do: client |> ExIrc.Client.logon(pass, nick, nick, nick)
+
+  def join_many(channels),
+  do: channels |> Enum.each(&join(&1))
 
   def join_many(client, channels) do
     channels |> Enum.each(&join(client, &1))
@@ -47,18 +50,25 @@ defmodule Blur.IRC do
 
   def join(client, "#" <> _ = channel) do
     Logger.debug "Join #{channel}"
-    client |> ExIrc.Client.join(channel)
+
+    client
+    |> ExIrc.Client.join(channel)
   end
 
-  def join("#" <> _ = channel),
-    do: :irc_client |> join(channel)
+  def join(client, channel),
+  do: join(client, "#" <> channel)
 
-  def say(client, "#" <> _ = channel, msg) do
+  def join("#" <> _ = channel),
+  do: :irc_client |> join(channel)
+
+  def join(channel),
+  do: join("#" <> channel)
+
+  def say(client, "#" <> _ = channel, msg)  do
     client |> ExIrc.Client.msg(:privmsg, channel, msg)
   end
 
-  def say("#" <> _ = channel, msg),
-    do: :irc_client |> say(channel, msg)
-
-
+  def say("#" <> _ = channel, msg) do
+    :irc_client |> say(channel, msg)
+  end
 end

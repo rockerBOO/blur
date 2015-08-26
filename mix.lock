@@ -1,5 +1,9 @@
-%{"exirc": {:git, "git://github.com/bitwalker/exirc.git", "211c434bd19c26c371912b047e9d7fe4ab72f975", []},
+%{"amnesia": {:git, "git://github.com/meh/amnesia.git", "0c2492bebfeca706978d26e4ee0bfe0fc409b086", []},
+  "con_cache": {:hex, :con_cache, "0.8.0"},
+  "exactor": {:hex, :exactor, "2.1.2"},
+  "exirc": {:git, "git://github.com/bitwalker/exirc.git", "211c434bd19c26c371912b047e9d7fe4ab72f975", []},
   "exprintf": {:git, "git://github.com/parroty/exprintf.git", "5e71122ca40b0a9e0c8d4f57d64a8004b9d007ef", []},
+  "exquisite": {:hex, :exquisite, "0.1.4"},
   "hackney": {:hex, :hackney, "1.2.0"},
   "httpoison": {:hex, :httpoison, "0.7.0"},
   "idna": {:hex, :idna, "1.0.2"},
@@ -7,4 +11,5 @@
   "plug": {:hex, :plug, "0.13.0"},
   "poison": {:hex, :poison, "1.4.0"},
   "rest_twitch": {:git, "git://github.com/rockerBOO/rest_twitch.git", "232b1d00eb74552d0e03d6b497fe86e084739403", []},
+  "socket": {:hex, :socket, "0.3.0"},
   "ssl_verify_hostname": {:hex, :ssl_verify_hostname, "1.0.5"}}
