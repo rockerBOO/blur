@@ -14,7 +14,7 @@ defmodule Blur.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :exirc, :con_cache],
+    [applications: [:logger, :exirc, :con_cache, :httpoison],
      mod: {Blur.IRC.App, [host: "irc.twitch.tv", port: 6667]}]
   end
 
@@ -32,6 +32,7 @@ defmodule Blur.Mixfile do
      {:con_cache, "~> 0.8.0"},
      {:socket, "~> 0.3.0"},
      {:amnesia, github: "meh/amnesia"},
-     {:poison, "~> 1.4.0"}]
+     {:poison, "~> 1.5"},
+     {:httpoison, "~> 0.7.2"}]
   end
 end
