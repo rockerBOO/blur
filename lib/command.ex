@@ -5,6 +5,9 @@ defmodule Blur.Command do
   def run(command, user, channel) do
     case command do
       ["say", message] -> Blur.say(channel, message)
+      ["cmd", "song"]  ->
+        {artist, _, title} = Blur.Lastfm.get_last_played()
+        Blur.say(channel, "#{artist} - #{title}")
       ["cmd", cmd]     -> IO.inspect cmd
       _                -> nil
     end

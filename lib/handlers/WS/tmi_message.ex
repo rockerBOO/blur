@@ -4,5 +4,6 @@ defmodule TmiMessage do
             user:    '',
             host:    '',
             cmd:     '',
+            ctcp:    nil,
             args:    []
 end
