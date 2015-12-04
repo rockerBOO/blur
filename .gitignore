@@ -3,3 +3,8 @@
 erl_crash.dump
 *.ez
 .env
+
+Mnesia.*
+data/*
+dump.rdb
+errors

@@ -1,10 +1,18 @@
 defmodule Blur.Lastfm do
+  @moduledoc """
+    Interface with last.fm
+
+    get_last_played()
+
+  """
+
   require Logger
 
   def get_last_played() do
     user = System.get_env("LAST_FM_USER")
 
-    latest_track = Lastfm.Request.get!("method=user.getRecentTracks&user=#{user}&nowplaying=true").body
+    method = "method=user.getRecentTracks&user=#{user}&nowplaying=true"
+    latest_track = Lastfm.Request.get!(method).body
     |> Map.fetch!("recenttracks")
     |> Map.fetch!("track")
     |> hd

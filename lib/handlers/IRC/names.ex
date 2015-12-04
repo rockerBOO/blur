@@ -1,4 +1,8 @@
 defmodule Blur.IRCHandler.Names do
+  @moduledoc """
+  Stores the names of the users in a channel
+  """
+
   require Logger
 
   alias Blur.Channel
@@ -13,8 +17,8 @@ defmodule Blur.IRCHandler.Names do
   end
 
   def handle_info({:names_list, channel, names}, state) do
-    String.split(names, " ")
-    |> Enum.each(fn (name) ->
+    names = String.split(names, " ")
+    names |> Enum.each(fn (name) ->
       Channel.add_user(channel, name)
     end)
 

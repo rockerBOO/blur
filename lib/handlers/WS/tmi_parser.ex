@@ -1,6 +1,11 @@
 # github.com/bitwalker/exirc/lib/exirc/utils.ex
 
 defmodule Blur.TMI.Parser do
+  @moduledoc """
+  Parser for Twitch Message Interface
+
+  """
+
   ######################
   # TMI Message Parsing
   ######################
@@ -8,7 +13,8 @@ defmodule Blur.TMI.Parser do
   @doc """
   Parse an TMI message
   Example:
-      data    = ':irc.example.org 005 nick NETWORK=Freenode PREFIX=(ov)@+ CHANTYPES=#&'
+      data    = ':irc.example.org 005 nick
+        NETWORK=Freenode PREFIX=(ov)@+ CHANTYPES=#&'
       message = Blur.TMI.Parser.parse data
       assert "irc.example.org" = message.server
   """
@@ -18,7 +24,9 @@ defmodule Blur.TMI.Parser do
     case data do
       [?:|_] ->
           [[?:|from]|rest] = :string.tokens(data, ' ')
-          get_cmd(rest, parse_from(from, %TmiMessage{ctcp: false}))
+
+          rest
+          |> get_cmd(parse_from(from, %TmiMessage{ctcp: false}))
       data ->
           get_cmd(:string.tokens(data, ' '), %TmiMessage{ctcp: false})
     end
@@ -27,15 +35,21 @@ defmodule Blur.TMI.Parser do
   @split_pattern ~r/(!|@|\.)/
   defp parse_from(from, msg) do
     from_str = IO.iodata_to_binary(from)
-    splits   = Regex.scan(@split_pattern, from_str, return: :index)
-               |> Enum.map(fn [{start, len},_] -> binary_part(from_str, start, len) end)
+    splits   = parse = Regex.scan(@split_pattern, from_str, return: :index)
+               parse |> Enum.map(fn [{start, len},_] ->
+                binary_part(from_str, start, len)
+                end)
     parts    = Regex.split(@split_pattern, from_str)
     woven    = weave(splits, parts)
     case woven do
       [nick, "!", user, "@" | host] ->
-        %{msg | :nick => nick, :user => user, :host => Enum.join(host)}
+        %{msg | :nick => nick,
+          :user => user,
+          :host => Enum.join(host)}
       [nick, "@" | host] ->
-        %{msg | :nick => nick, :host => Enum.join(host)}
+        %{msg |
+          :nick => nick,
+          :host => Enum.join(host)}
       [_, "." | _] ->
         # from is probably a server name
         %{msg | :server => to_string(from)}
@@ -45,11 +59,13 @@ defmodule Blur.TMI.Parser do
   end
 
   # Parse command from message
-  defp get_cmd([cmd, arg1, [?:, 1 | ctcp_trail] | restargs], msg) when cmd == 'PRIVMSG' or cmd == 'NOTICE' do
+  defp get_cmd([cmd, arg1, [?:, 1 | ctcp_trail] | restargs], msg)
+    when cmd == 'PRIVMSG' or cmd == 'NOTICE' do
     get_cmd([cmd, arg1, [1 | ctcp_trail] | restargs], msg)
   end
 
-  defp get_cmd([cmd, target, [1 | ctcp_cmd] | cmd_args], msg) when cmd == 'PRIVMSG' or cmd == 'NOTICE' do
+  defp get_cmd([cmd, target, [1 | ctcp_cmd] | cmd_args], msg)
+    when cmd == 'PRIVMSG' or cmd == 'NOTICE' do
     args = cmd_args
       |> Enum.map(&Enum.take_while(&1, fn c -> c != 0o001 end))
       |> Enum.map(&List.to_string/1)
@@ -80,7 +96,11 @@ defmodule Blur.TMI.Parser do
   end
 
   defp get_args([[?: | first_arg] | rest], msg) do
-    args = (for arg <- [first_arg | rest], do: ' ' ++ trim_crlf(arg)) |> List.flatten
+    args = (for arg <- [first_arg | rest] do
+      flatten = ' ' ++ trim_crlf(arg)
+      flatten |> List.flatten
+    end)
+
     case args do
       [_ | []] ->
           get_args [], %{msg | :args => [msg.args]}
@@ -105,7 +125,10 @@ defmodule Blur.TMI.Parser do
   end
 
   defp weave(xs, ys), do: do_weave(xs, ys, [])
-  defp do_weave([], ys, result),           do: (ys ++ result) |> Enum.reverse
-  defp do_weave(xs, [], result),           do: (xs ++ result) |> Enum.reverse
-  defp do_weave([hx|xs], [hy|ys], result), do: do_weave(xs, ys, [hx, hy | result])
+  defp do_weave([], ys, result),
+    do: Enum.reverse(ys ++ result)
+  defp do_weave(xs, [], result),
+    do: Enum.reverse(xs ++ result)
+  defp do_weave([hx|xs], [hy|ys], result),
+    do: do_weave(xs, ys, [hx, hy | result])
 end

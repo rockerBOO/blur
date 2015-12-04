@@ -1,4 +1,8 @@
 defmodule Mix.Tasks.Install do
+  @moduledoc """
+  Install Points extension (Amnesia based)
+  """
+
   use Mix.Task
   use Blur.Ext.Points.Database
 

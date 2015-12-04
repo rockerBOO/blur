@@ -1,4 +1,10 @@
 defmodule Blur.WS.Listener do
+  @moduledoc """
+  Web Socket Listener for messages
+
+  * Move messages to message queue
+  """
+
   require Logger
 
   def start_link(socket) do

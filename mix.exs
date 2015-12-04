@@ -18,10 +18,12 @@ defmodule Blur.Mixfile do
   defp deps do
     [{:exirc, github: "bitwalker/exirc"},
      {:con_cache, "~> 0.9.0"},
+
      {:socket, "~> 0.3.1"},
      {:amnesia, "~> 0.2.0"},
      {:poison, "~> 1.5"},
      {:httpoison, "~> 0.7.2"},
-     {:lastfm, github: "rockerBOO/lastfm"}]
+     {:lastfm, github: "rockerBOO/lastfm"},
+     {:dogma, "~> 0.0", only: :dev},]
   end
 end

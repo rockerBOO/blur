@@ -1,4 +1,10 @@
 defmodule Blur.Channel.Config do
+  @moduledoc """
+
+    Config for the channel
+    - Loads from a data file in blur/data/#channel/x.json
+  """
+
   require Logger
 
   def load_channel_config(channel) do
@@ -13,7 +19,7 @@ defmodule Blur.Channel.Config do
     end
   end
 
-  def load(channel, []), do: :ok
+  def load(_channel, []), do: :ok
   def load(channel, [type | remaining]) do
     channel |> load_from_json(type) |> save(channel, type)
 
@@ -45,7 +51,7 @@ defmodule Blur.Channel.Config do
   end
 
   def config_loaded?(channel) do
-    ConCache.ets(:channels_config)
-    |> :ets.member("#{channel}-config")
+    cache = ConCache.ets(:channels_config)
+    cache |> :ets.member("#{channel}-config")
   end
 end

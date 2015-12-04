@@ -1,4 +1,11 @@
 defmodule Blur.IRCHandler.Connection do
+  @moduledoc """
+  Handles IRC Connection events
+
+    :connected server, port
+    :disconnected
+  """
+
   require Logger
 
   def start_link(client, state \\ []) do
@@ -9,7 +16,9 @@ defmodule Blur.IRCHandler.Connection do
     client = Keyword.get(state, :client)
 
     client |> ExIrc.Client.add_handler self
-    client |> Blur.IRC.connect(Keyword.get(state, :host), Keyword.get(state, :port))
+    client |> Blur.IRC.connect(
+      Keyword.get(state, :host), Keyword.get(state, :port)
+    )
 
     {:ok, state}
   end
@@ -20,7 +29,8 @@ defmodule Blur.IRCHandler.Connection do
     nick = Blur.Env.fetch!(:username)
 
     # Login to IRC
-    Keyword.get(state, :client) |> Blur.IRC.login(nick, Blur.token)
+    client = Keyword.get(state, :client)
+    client |> Blur.IRC.login(nick, Blur.token)
 
     {:noreply, state}
   end
