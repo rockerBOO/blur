@@ -26,15 +26,14 @@ defmodule Blur.IRCHandler.Message do
     Logger.debug "#{channel} #{user}: #{msg}"
 
     if Channel.config?(channel) do
-      msg = Message.parse(msg, user, channel)
+      msg = Message.parse(channel, user, msg)
 
       msg |> Command.run(user, channel)
-
-      |> case do
-        {:error, error} -> Logger.error error
-        :ok -> Logger.debug "Command send properly"
-        nil -> Logger.debug "No command to run"
-      end
+        |> case do
+          {:error, error} -> Logger.error error
+          :ok -> Logger.debug "Command send properly"
+          nil -> Logger.debug "No command to run"
+        end
     end
 
     {:noreply, state}

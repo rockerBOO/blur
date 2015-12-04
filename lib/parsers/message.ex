@@ -8,8 +8,12 @@ defmodule Blur.Parser.Message do
   alias   Blur.Parser.Command
   require Logger
 
-  def parse(message, user, channel) do
+
+  # Blur.Channel.aliases(channel)
+  # Blur.Channel.commands(channel)
+  def parse(channel, user, message) do
     message
-    |> Command.find(user, channel)
+    |> Command.find()
+    |> Command.translate(channel, user)
   end
 end

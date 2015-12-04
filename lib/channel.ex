@@ -13,6 +13,7 @@ defmodule Blur.Channel do
 
   require Logger
   alias Blur.Channel.Config
+  alias Blur.Parser.Command
 
   defmodule Error do
     @moduledoc """
@@ -38,10 +39,10 @@ defmodule Blur.Channel do
     {:ok, %{channel: channel, config?: config?, users: users}}
   end
 
+
   def add_user(channel, user) do
     atom = channel_to_atom(channel)
-    atom
-    |> GenServer.cast({:add_user, user})
+    atom |> GenServer.cast({:add_user, user})
   end
 
   def remove_user(channel, user) do
@@ -62,9 +63,9 @@ defmodule Blur.Channel do
     atom |> GenServer.call(:config?)
   end
 
-  def commands(channel) do
+  def commands(channel, user) do
     atom = channel_to_atom(channel)
-    atom |> GenServer.call(:commands)
+    atom |> GenServer.call({:commands, user})
   end
 
   def aliases(channel) do
@@ -72,11 +73,30 @@ defmodule Blur.Channel do
     atom |> GenServer.call(:aliases)
   end
 
-  def handle_call(:aliases, _from, state),
-  do: {:reply, Config.get("#{state.channel}-aliases"), state}
+  def aliases_config(channel) do
+    Config.get("#{channel}-aliases")
+  end
 
-  def handle_call(:commands, _from, state),
-  do: {:reply, Config.get("#{state.channel}-commands"), state}
+  def commands_config(channel) do
+    Config.get("#{channel}-commands")
+  end
+
+  def translation(channel) do
+    { aliases_config(channel),
+      commands_config(channel) }
+  end
+
+  # def handle_call({:translate, user, message}, _from, state) do
+  #   message = translate(user, message, state.channel)
+
+  #   {:ok, message, state}
+  # end
+
+  def handle_call(:aliases, _from, state),
+  do: {:reply, aliases_config(state.channel), state}
+
+  def handle_call({:commands}, _from, state),
+  do: {:reply, commands_config(state.channel), state}
 
   def handle_call(:config?, _from, state),
   do: {:reply, state.config?, state}
