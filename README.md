@@ -35,14 +35,14 @@ Configuration for channels are stored in `data/#channel/`
 	* Stores aliases for commmands
 
 ### `data/#channel/config.json`
-```javascript
+```js
 {
   "messages": "on"
 }
 ```
 
 ### `data/#channel/commands.json`
-```javascript
+```js
 {
   "hello": ["say", "Hello"],
   "help": ["say", "You need help"],
@@ -52,10 +52,11 @@ Configuration for channels are stored in `data/#channel/`
   "song": ["cmd", "song"],
   "highlight": ["cmd", "highlight"]
 }
-
-```javascript
-### `data/#channel/aliases.json`
 ```
+
+
+### `data/#channel/aliases.json`
+```js
 {
   "bealight": "bealright",
   "bot": "elirc",
