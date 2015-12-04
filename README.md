@@ -25,7 +25,7 @@ export TWITCH_USERNAME=
 
 ## Configuration for Channels
 
-Configuration for channels are stored in `data/CHANNEL/`
+Configuration for channels are stored in `data/#channel/`
 
 * `data/rockerboo/commands.json`
 	* Commands list
@@ -33,3 +33,44 @@ Configuration for channels are stored in `data/CHANNEL/`
 	* Configuration options for the channel
 * `data/rockerboo/aliases.json`
 	* Stores aliases for commmands
+
+### `data/#channel/config.json`
+```js
+{
+  "messages": "on"
+}
+```
+
+### `data/#channel/commands.json`
+```js
+{
+  "hello": ["say", "Hello"],
+  "help": ["say", "You need help"],
+  "follower": ["cmd", "follower"],
+  "followed": ["cmd", "followed"],
+  "flip": ["say", "(╯°□°）╯︵┻━┻"],
+  "song": ["cmd", "song"],
+  "highlight": ["cmd", "highlight"]
+}
+```
+
+
+### `data/#channel/aliases.json`
+```js
+{
+  "bealight": "bealright",
+  "bot": "elirc",
+  "glacier": "theme",
+  "xfile": "xfiles",
+  "x-file": "xfiles",
+  "x-files": "xfiles",
+  "h": "help",
+  "playlist": "lastfm",
+  "coming": "getsmeeverytime",
+  "63": "speedlimit",
+  "soundslist": "soundlist",
+  "sounds": "soundlist",
+  "table": "flip",
+  "tableflip": "flip"
+}
+```

@@ -24,6 +24,6 @@ defmodule Blur.Mixfile do
      {:poison, "~> 1.5"},
      {:httpoison, "~> 0.7.2"},
      {:lastfm, github: "rockerBOO/lastfm"},
-     {:dogma, "~> 0.0", only: :dev},]
+     {:dogma, "~> 0.0", only: :dev}]
   end
 end
