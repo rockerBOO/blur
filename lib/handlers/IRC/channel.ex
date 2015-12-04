@@ -1,4 +1,10 @@
 defmodule Blur.IRCHandler.Channel do
+  @moduledoc """
+  Handles IRC Channels events
+
+    :joined
+  """
+
   require Logger
 
   def start_link(client) do

@@ -1,4 +1,8 @@
 defmodule Blur.IRCHandler.Login do
+  @moduledoc """
+  Handle the IRC login messages
+  """
+
   require Logger
 
   def start_link(client) do
@@ -20,8 +24,8 @@ defmodule Blur.IRCHandler.Login do
   end
 
   def autojoin() do
-    Application.get_env(:blur, :autojoin, [])
-    |> Blur.IRC.join_many
+    autojoin = Application.get_env(:blur, :autojoin, [])
+    autojoin |> Blur.IRC.join_many
   end
 
   # Drops unknown messages

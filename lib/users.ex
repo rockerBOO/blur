@@ -1,4 +1,8 @@
 defmodule Blur.Channel.Users do
+  @moduledoc """
+  Manages the lists of users in each channel
+  """
+
   require Logger
 
   def start_link("#" <> _ = channel, process_opts \\ []) do
@@ -6,8 +10,9 @@ defmodule Blur.Channel.Users do
   end
 
   def init([channel]) do
-    ets_table(channel)
-    |> :ets.new([:ordered_set, :named_table, :public])
+    table = ets_table(channel)
+
+    table |> :ets.new([:ordered_set, :named_table, :public])
 
     {:ok, :ok}
   end
@@ -17,7 +22,9 @@ defmodule Blur.Channel.Users do
   end
 
   def list("#" <> _ = channel) do
-    ets_table(channel)
+    table = ets_table(channel)
+
+    table
     |> :ets.tab2list()
     |> Enum.map(fn ({name}) ->
       name
@@ -27,14 +34,16 @@ defmodule Blur.Channel.Users do
   def add("#" <> _ = channel, user) do
     Logger.debug "Adding #{channel} #{user}"
 
-    ets_table(channel)
-    |> :ets.insert_new({user})
+    table = ets_table(channel)
+
+    table |> :ets.insert_new({user})
   end
 
   def remove("#" <> _ = channel, user) do
     Logger.debug "Removing #{channel} #{user}"
 
-    ets_table(channel)
-    |> :ets.delete(user)
+    table = ets_table(channel)
+
+    table |> :ets.delete(user)
   end
 end

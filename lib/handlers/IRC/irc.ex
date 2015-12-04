@@ -1,4 +1,9 @@
 defmodule Blur.IRC do
+  @moduledoc """
+  Shortcuts for IRC options to auto join channels
+
+  """
+
   require Logger
 
   @doc """

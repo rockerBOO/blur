@@ -1,4 +1,8 @@
 defmodule Blur.IRC.App do
+  @moduledoc """
+  Start the IRC clients and set phasers to ...
+  """
+
   use Supervisor
   require Logger
 
@@ -24,13 +28,15 @@ defmodule Blur.IRC.App do
       worker(Blur.IRCHandler.Names, [irc_client]),
     ]
 
-    opts = [strategy: :one_for_one, name: Elirc.Supervisor]
+    opts = [strategy: :one_for_one,
+      name: Elirc.Supervisor]
 
     Supervisor.start_link(children, opts)
   end
 
   def terminate(_reason, _state) do
-    # Quit the channel and close the underlying client connection when the process is terminating
+    # Quit the channel and close the underlying client
+    # connection when the process is terminating
     ExIrc.Client.quit :irc_client, "See ya later. Blur"
     ExIrc.Client.stop! :irc_client
 

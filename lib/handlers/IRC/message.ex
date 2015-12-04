@@ -1,4 +1,10 @@
 defmodule Blur.IRCHandler.Message do
+  @moduledoc """
+  Handles incoming messages
+
+    :received
+  """
+
   require Logger
 
   alias Blur.Command
@@ -19,9 +25,12 @@ defmodule Blur.IRCHandler.Message do
   def handle_info({:received, msg, user, channel}, state) do
     Logger.debug "#{channel} #{user}: #{msg}"
 
-    if Channel.has_config?(channel) do
-      case Message.parse(msg, user, channel)
-           |> Command.run(user, channel) do
+    if Channel.config?(channel) do
+      msg = Message.parse(msg, user, channel)
+
+      msg |> Command.run(user, channel)
+
+      |> case do
         {:error, error} -> Logger.error error
         :ok -> Logger.debug "Command send properly"
         nil -> Logger.debug "No command to run"

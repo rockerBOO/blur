@@ -1,4 +1,10 @@
 defmodule Blur.WS.Client do
+  @moduledoc """
+  Web Socket Client
+
+  * Should move to events
+  """
+
   require Logger
 
   def start_link() do
@@ -18,7 +24,9 @@ defmodule Blur.WS.Client do
   end
 
   def get_ws_server() do
-    get_chat_servers()
+    chat_servers = get_chat_servers()
+
+    chat_servers
     |> Enum.shuffle
     |> hd
     |> String.split(":")

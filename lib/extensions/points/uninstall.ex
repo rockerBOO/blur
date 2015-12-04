@@ -1,4 +1,8 @@
 defmodule Mix.Tasks.Uninstall do
+  @moduledoc """
+  Remove Points from the server
+  """
+
   use Mix.Task
   use Blur.Ext.Points.Database
 

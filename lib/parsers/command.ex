@@ -1,12 +1,16 @@
 defmodule Blur.Parser.Command do
+  @moduledoc """
+  Parses messages for commands
+  """
+
   require Logger
 
   def parse("!" <> command), do: command
   def parse(message), do: nil
 
   def find(message, user, channel) do
-    parse(message)
-    |> translate(channel)
+    message = parse(message)
+    message |> translate(channel)
   end
 
   def translate(message, channel) do
@@ -16,13 +20,13 @@ defmodule Blur.Parser.Command do
   end
 
   def translate_alias(message, aliases) do
-    case is_alias?(message, aliases) do
+    case alias?(message, aliases) do
       true  -> alias_to_command(message, aliases)
       false -> message
     end
   end
 
-  def is_alias?(message, aliases) do
+  def alias?(message, aliases) do
     if aliases[message] do
       true
     else false end

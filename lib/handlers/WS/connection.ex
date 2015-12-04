@@ -1,4 +1,8 @@
 defmodule Blur.WS.Connection do
+  @moduledoc """
+  Web Socket Connection
+  """
+
   def start_link(server, path) do
     GenServer.start_link(__MODULE__, [server, path], name: Blur.WS.Connection)
   end

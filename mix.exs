@@ -10,29 +10,20 @@ defmodule Blur.Mixfile do
      deps: deps]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type `mix help compile.app` for more information
   def application do
-    [applications: [:logger, :exirc, :con_cache, :httpoison],
+    [applications: [:logger, :exirc, :con_cache, :httpoison, :lastfm],
      mod: {Blur.IRC.App, [host: "irc.twitch.tv", port: 6667]}]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
-  #
-  # Type `mix help deps` for more examples and options
   defp deps do
     [{:exirc, github: "bitwalker/exirc"},
-     {:con_cache, "~> 0.8.0"},
-     {:socket, "~> 0.3.0"},
-     {:amnesia, github: "meh/amnesia"},
+     {:con_cache, "~> 0.9.0"},
+
+     {:socket, "~> 0.3.1"},
+     {:amnesia, "~> 0.2.0"},
      {:poison, "~> 1.5"},
-     {:httpoison, "~> 0.7.2"}]
+     {:httpoison, "~> 0.7.2"},
+     {:lastfm, github: "rockerBOO/lastfm"},
+     {:dogma, "~> 0.0", only: :dev},]
   end
 end

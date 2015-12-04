@@ -1,4 +1,8 @@
 defmodule Blur.Extension.Points do
+  @moduledoc """
+  Managing the points state
+  """
+
   def start_link(opts, process_opts \\ []) do
     GenServer.start_link(__MODULE__, opts, process_opts)
   end
@@ -8,8 +12,9 @@ defmodule Blur.Extension.Points do
   end
 
   def update_points() do
-    Blur.Channel.users("#rockerboo")
-    |> Enum.each(fn (user) ->
+    users = Blur.Channel.users("#rockerboo")
+
+    users |> Enum.each(fn (user) ->
       result = Blur.Ext.Point.read!(user: user)
 
       IO.inspect result
