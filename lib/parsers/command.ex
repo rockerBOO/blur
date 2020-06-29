@@ -6,11 +6,10 @@ defmodule Blur.Parser.Command do
   require Logger
 
   def parse("!" <> command), do: command
-  def parse(message), do: nil
+  def parse(_message), do: nil
 
-  def find(message, user, channel) do
-    message = parse(message)
-    message |> translate(channel)
+  def find(message, _user, channel) do
+    parse(message) |> translate(channel)
   end
 
   def translate(message, channel) do
@@ -21,7 +20,7 @@ defmodule Blur.Parser.Command do
 
   def translate_alias(message, aliases) do
     case alias?(message, aliases) do
-      true  -> alias_to_command(message, aliases)
+      true -> alias_to_command(message, aliases)
       false -> message
     end
   end
@@ -29,7 +28,9 @@ defmodule Blur.Parser.Command do
   def alias?(message, aliases) do
     if aliases[message] do
       true
-    else false end
+    else
+      false
+    end
   end
 
   def alias_to_command(message, aliases) do

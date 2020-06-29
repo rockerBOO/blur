@@ -1,30 +1,59 @@
-defmodule Blur.IRCHandler.Channel do
+defmodule Blur.IRC.Channel do
   @moduledoc """
   Handles IRC Channels events
-
-    :joined
   """
-
+  use GenServer
   require Logger
+  alias ExIRC.Client
 
+  @spec start_link(client :: pid) :: GenServer.on_start()
   def start_link(client) do
-    GenServer.start_link(__MODULE__, [client])
+    GenServer.start_link(__MODULE__, client)
   end
 
-  def init([client]) do
-    ExIrc.Client.add_handler client, self
+  @impl true
+  @spec init(client :: pid) :: {:ok, pid}
+  def init(client) do
+    Client.add_handler(client, self())
     {:ok, client}
   end
 
-  def handle_info({:joined, channel}, state) do
-    Logger.debug "Joined #{channel}"
+  @doc """
+  Handle channel messages
+  """
+  @impl true
+  @spec handle_info({:joined, channel :: charlist}, client :: pid) :: {:noreply, pid}
+  def handle_info({:joined, channel}, client) do
+    Logger.debug("Joined #{channel}")
 
-    {:ok, _} = Blur.Channel.start_link(channel)
+    {:ok, _} = Blur.Channel.start_link(client, channel)
 
+    {:noreply, client}
+  end
+
+  @impl true
+  @spec handle_info({:joined, channel :: charlist, sender :: %ExIRC.SenderInfo{}}, pid) ::
+          {:noreply, pid}
+  def handle_info({:joined, _channel, _sender}, client) do
+    {:noreply, client}
+  end
+
+  @spec handle_info({:logon, charlist, nick :: charlist, charlist, charlist}, state :: pid) ::
+          {:noreply, pid}
+  def handle_info({:logon, _, _nick, _, _}, state) do
+    Logger.debug("Drop logon message")
     {:noreply, state}
   end
 
-  # Catch-all for messages you don't care about
+  @spec handle_info({:kicked, sender :: %ExIRC.SenderInfo{}, channel :: charlist}, state :: pid) ::
+          {:noreply, pid}
+  def handle_info({:kicked, sender, channel}, state) do
+    by = sender.nick
+    Logger.debug("We were kicked from #{channel} by #{by}")
+    {:noreply, state}
+  end
+
+  # Drops unknown messages
   def handle_info(_msg, state) do
     {:noreply, state}
   end

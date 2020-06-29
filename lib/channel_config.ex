@@ -12,7 +12,7 @@ defmodule Blur.Channel.Config do
 
     # check if commands were loaded for channel
     if config_loaded?(channel) do
-      Logger.info "Loaded config for #{channel}"
+      Logger.info("Loaded config for #{channel}")
       true
     else
       false
@@ -20,6 +20,7 @@ defmodule Blur.Channel.Config do
   end
 
   def load(_channel, []), do: :ok
+
   def load(channel, [type | remaining]) do
     channel |> load_from_json(type) |> save(channel, type)
 
@@ -27,8 +28,8 @@ defmodule Blur.Channel.Config do
   end
 
   def load_from_json("#" <> channel, type) do
-    case File.read "data/#{channel}/#{type}.json" do
-      {:ok, body}       -> body |> Poison.decode!()
+    case File.read("data/#{channel}/#{type}.json") do
+      {:ok, body} -> body |> Poison.decode!()
       {:error, :enoent} -> nil
     end
   end
@@ -51,7 +52,6 @@ defmodule Blur.Channel.Config do
   end
 
   def config_loaded?(channel) do
-    cache = ConCache.ets(:channels_config)
-    cache |> :ets.member("#{channel}-config")
+    ConCache.ets(:channels_config) |> :ets.member("#{channel}-config")
   end
 end
