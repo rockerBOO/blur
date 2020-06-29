@@ -5,7 +5,7 @@ defmodule Blur.Parser.Message do
   * Fix flow
   """
 
-  alias   Blur.Parser.Command
+  alias Blur.Parser.Command
   require Logger
 
   def parse(message, user, channel) do

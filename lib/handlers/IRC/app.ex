@@ -1,44 +1,46 @@
 defmodule Blur.IRC.App do
   @moduledoc """
-  Start the IRC clients and set phasers to ...
+  Blur IRC App Supervisor
+
+  Children
+  * ConCache
+  * Blur.IRC.Connection
+  * Blur.IRC.Login
   """
 
   use Supervisor
   require Logger
+  alias ExIRC.Client
 
-  # ExIrc connection
-  def start_irc_client do
-    case ExIrc.Client.start_link([], name: :irc_client) do
-      {:ok, irc_client} -> irc_client
-    end
+  @spec start(atom, list) :: GenServer.on_start
+  def start(_type, opts) do
+    Supervisor.start_link(__MODULE__, :ok, opts)
   end
 
-  def start(_type, irc_args) do
-    irc_client = start_irc_client
+  @impl true
+  @spec init(:ok) :: {:ok, tuple}
+  def init(:ok) do
+    {:ok, irc_client} = Client.start_link()
 
-    Blur.Env.validate!
+    # Register :irc_client for easy access for commands. Better idea?
+    Process.register(irc_client, :irc_client)
 
     children = [
       worker(ConCache, [[], [name: :channels_config]]),
-      # IRC Handlers
-      worker(Blur.IRCHandler.Connection, [irc_client, irc_args]),
-      worker(Blur.IRCHandler.Login, [irc_client]),
-      worker(Blur.IRCHandler.Message, [irc_client]),
-      worker(Blur.IRCHandler.Channel, [irc_client]),
-      worker(Blur.IRCHandler.Names, [irc_client]),
+      {Blur.IRC.Connection, [irc_client]},
+      {Blur.IRC.Login, [irc_client, ["#rockerboo", "#firstcrimson"]]}
     ]
 
-    opts = [strategy: :one_for_one,
-      name: Elirc.Supervisor]
-
-    Supervisor.start_link(children, opts)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 
-  def terminate(_reason, _state) do
+  def terminate(_reason, irc_client) do
     # Quit the channel and close the underlying client
     # connection when the process is terminating
-    ExIrc.Client.quit :irc_client, "See ya later. Blur"
-    ExIrc.Client.stop! :irc_client
+    Blur.IRC.quit(irc_client)
+    Blur.IRC.stop!(irc_client)
+
+    Logger.info("Closed IRC connection.")
 
     :ok
   end

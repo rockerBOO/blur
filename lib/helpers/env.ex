@@ -10,8 +10,8 @@ defmodule Blur.Env do
   """
   def fetch!(key) when is_atom(key) do
     case fetch(key) do
+      "" -> raise "Environmetal variable not found"
       value -> value
-      error -> raise "Environmetal variable not found"
     end
   end
 
@@ -20,9 +20,10 @@ defmodule Blur.Env do
   """
   def fetch(key) when is_atom(key) do
     case key do
-      :chat_key     -> System.get_env("TWITCH_CHAT_KEY")
+      :chat_key -> System.get_env("TWITCH_CHAT_KEY")
       :access_token -> System.get_env("TWITCH_ACCESS_TOKEN")
-      :username     -> System.get_env("TWITCH_USERNAME")
+      :username -> System.get_env("TWITCH_USERNAME")
+      _ -> ""
     end
   end
 
@@ -31,7 +32,7 @@ defmodule Blur.Env do
   variables are setup.
   """
   def validate! do
-    IO.inspect System.get_env("TWITCH_USERNAME")
+    IO.inspect(System.get_env("TWITCH_USERNAME"))
 
     if System.get_env("TWITCH_USERNAME") == nil do
       raise "Environmetal variables not found"
