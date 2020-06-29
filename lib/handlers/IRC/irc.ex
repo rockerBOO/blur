@@ -2,6 +2,7 @@ defmodule Blur.IRC do
   @moduledoc """
   Shortcuts for IRC options to auto join channels
 
+  client is a process of `ExIRC.Client.start_link`
   """
 
   require Logger
@@ -10,70 +11,165 @@ defmodule Blur.IRC do
   Request the CAP (capability) on the server
 
   ## Example
-  cap_request(ExIrc.Client, ':twitch.tv/membership')
+      iex> Blur.IRC.cap_request client, ':twitch.tv/membership'
+      :ok
   """
+  @spec cap_request(client :: pid, cap :: binary) :: :ok | {:error, atom}
   def cap_request(client, cap) do
-    client |> ExIrc.Client.cmd(['CAP ', 'REQ ', cap])
+    ExIRC.Client.cmd(client, "CAP REQ #{cap}")
   end
 
   @doc """
   Request twitch for capabilities
+
+  ## Example
+      iex> Blur.IRC.request_twitch_capabilities client
+      :ok
   """
+  @spec request_twitch_capabilities(client :: pid) :: :ok | {:error, atom}
   def request_twitch_capabilities(client) do
     # Request capabilities before joining the channel
-    client |> cap_request(":twitch.tv/membership")
-    client |> cap_request(":twitch.tv/commands")
+    cap_request(client, ":twitch.tv/membership")
+    cap_request(client, ":twitch.tv/commands")
+    cap_request(client, ":twitch.tv/tags")
   end
 
-  # Chat Key
+  @doc """
+  Parse oauth token
+
+  ## Example
+      iex> Blur.IRC.parse_token "oauthhashherewithlettersandnumbers"
+      "oauth:oauthhashherewithlettersandnumbers"
+  """
   def parse_token(<<"oauth:"::utf8, _>> = pass),
-  do: pass
+    do: pass
 
-  # Access token
   def parse_token(access_token),
-  do: "oauth:" <> access_token
+    do: "oauth:" <> access_token
 
-  def connect(client, host, port),
-  do: client |> ExIrc.Client.connect!(host, port)
+  @doc """
+  Connect to the IRC server.
 
-  def connect(client) do
-    %{host: host, port: port} = %Blur.Connection.State{}
+  ## Example
+      iex> Blur.IRC.connect client, "irc.twitch.tv", 6667
+      :ok
+  """
+  @spec connect!(client :: pid, host :: binary, port :: non_neg_integer) :: :ok
+  def connect!(client, host, port),
+    do: ExIRC.Client.connect!(client, host, port)
 
-    client
-    |> ExIrc.Client.connect!(host, port)
+  @doc """
+  Connect to the default IRC server.
+
+  ## Example
+      iex> Blur.IRC.connect client
+      :ok
+  """
+  @spec connect!(client :: pid) :: :ok
+  def connect!(client) do
+    %{host: host, port: port} = %Blur.IRC.Connection.State{}
+
+    ExIRC.Client.connect!(client, host, port)
   end
 
+  @doc """
+  Login to the server.
+
+  ## Example 
+      iex> Blur.IRC.login client, "rockerBOO", "oauth:oauthhashherewithlettersandnumbers"
+      :ok
+  """
+  @spec login(client :: pid, nick :: binary, pass :: binary) :: :ok | {:error, :not_connected}
   def login(client, nick, pass),
-  do: client |> ExIrc.Client.logon(pass, nick, nick, nick)
+    do: ExIRC.Client.logon(client, pass, nick, nick, nick)
 
-  def join_many(channels),
-  do: channels |> Enum.each(&join(&1))
-
+  @doc """
+  Join many channels.
+  ## Example 
+      iex> Blur.IRC.join_many client, ["#rockerboo", "#adattape"]
+      :ok
+  """
+  @spec join_many(client :: pid, list) :: :ok | {:error, atom}
   def join_many(client, channels) do
     channels |> Enum.each(&join(client, &1))
   end
 
-  def join(client, "#" <> _ = channel) do
-    Logger.debug "Join #{channel}"
+  @doc """
+  Join an IRC channel.
 
-    client
-    |> ExIrc.Client.join(channel)
+  ## Example
+      iex> Blur.IRC.join client, "#rockerboo"
+      :ok
+  """
+  @spec join(client :: pid, channel :: binary) :: :ok | {:error, atom}
+  def join(client, "#" <> _ = channel) do
+    Logger.debug("Join #{channel}")
+    ExIRC.Client.join(client, channel)
   end
 
   def join(client, channel),
-  do: join(client, "#" <> channel)
+    do: join(client, "#" <> channel)
 
-  def join("#" <> _ = channel),
-  do: :irc_client |> join(channel)
+  @doc """
+  Part from IRC channel.
 
-  def join(channel),
-  do: join("#" <> channel)
-
-  def say(client, "#" <> _ = channel, msg)  do
-    client |> ExIrc.Client.msg(:privmsg, channel, msg)
+  ## Example
+      iex> Blur.IRC.part client, "#rockerboo"
+      :ok
+  """
+  @spec part(client :: pid, channel :: binary) :: :ok | {:error, atom}
+  def part(client, "#" <> _ = channel) do
+    Logger.debug("Part #{channel}")
+    ExIRC.Client.part(client, channel)
   end
 
-  def say("#" <> _ = channel, msg) do
-    :irc_client |> say(channel, msg)
+  def part(client, channel),
+    do: part(client, "#" <> channel)
+
+  @doc """
+  Send a message to the channel
+
+  ## Example
+      iex> Blur.IRC.say client, "#rockerboo", "Hello"
+      :ok
+  """
+  @spec say(client :: pid, channel :: binary, msg :: binary) :: :ok | {:error, atom}
+  def say(client, "#" <> _ = channel, msg) do
+    ExIRC.Client.msg(client, :privmsg, channel, msg)
+  end
+
+  @doc """
+  Quit the IRC server.
+
+  ## Example
+      iex> Blur.IRC.quit client, "Goodbye!"
+      :ok
+  """
+  @spec quit(client :: pid, msg :: nil | binary) :: :ok | {:error, atom}
+  def quit(client, msg) do
+    ExIRC.Client.quit(client, msg)
+  end
+
+  @doc """
+  Quit the IRC server with no message.
+
+  ## Example
+      iex> Blur.IRC.quit client
+      :ok
+  """
+  @spec quit(client :: pid) :: :ok | {:error, atom}
+  def quit(client) do
+    quit(client, nil)
+  end
+
+  @doc """
+  Stop the IRC client process
+
+  ## Example
+      iex> Blur.IRC.stop! client
+      {:stop, :normal, :ok, %ExIRC.Client{}}
+  """
+  def stop!(client) do
+    ExIRC.Client.stop!(client)
   end
 end

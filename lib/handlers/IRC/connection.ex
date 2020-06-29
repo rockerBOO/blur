@@ -1,43 +1,53 @@
-defmodule Blur.IRCHandler.Connection do
+defmodule Blur.IRC.Connection do
   @moduledoc """
   Handles IRC Connection events
-
-    :connected server, port
-    :disconnected
   """
 
   require Logger
+  use GenServer
+  alias Blur.IRC.Connection.State
 
-  def start_link(client, state \\ []) do
-    GenServer.start_link(__MODULE__, (state |> Keyword.put(:client, client)))
+  @spec start_link([client :: pid]) :: GenServer.on_start()
+  def start_link([client]) do
+    GenServer.start_link(__MODULE__, %State{client: client})
   end
 
+  @impl true
+  @spec init(%State{}) :: {:ok, %State{}}
   def init(state) do
-    client = Keyword.get(state, :client)
-
-    client |> ExIrc.Client.add_handler self
-    client |> Blur.IRC.connect(
-      Keyword.get(state, :host), Keyword.get(state, :port)
-    )
+    ExIRC.Client.add_handler(state.client, self())
+    Blur.IRC.connect!(state.client, state.host, state.port)
 
     {:ok, state}
   end
 
+  @impl true
+  @spec handle_info(
+          {:connected, server :: binary, port :: non_neg_integer()},
+          %State{}
+        ) :: {:noreply, %State{}}
   def handle_info({:connected, server, port}, state) do
-    Logger.debug "Connected to #{server}:#{port}"
+    Logger.debug("Connected to #{server}:#{port}")
 
     nick = Blur.Env.fetch!(:username)
 
     # Login to IRC
-    client = Keyword.get(state, :client)
-    client |> Blur.IRC.login(nick, Blur.token)
+    :ok = Blur.IRC.login(state.client, nick, Blur.token())
 
     {:noreply, state}
   end
 
-  def handle_info(:disconnected, state) do
-    Logger.debug ":disconnected"
+  @spec handle_info({:disconnected}, %State{}) ::
+          {:noreply, %State{}}
+  def handle_info({:disconnected}, state) do
+    Logger.debug(":disconnected")
 
+    {:noreply, state}
+  end
+
+  @spec handle_info({:disconnected, cmd :: binary, msg :: binary}, %State{}) ::
+          {:noreply, %State{}}
+  def handle_info({:disconnected, "@" <> _cmd, _msg}, state) do
     {:noreply, state}
   end
 
