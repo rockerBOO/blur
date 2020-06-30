@@ -7,8 +7,8 @@ defmodule Blur.IRC.Connection do
   use GenServer
   alias Blur.IRC.Connection.State
 
-  @spec start_link([client :: pid]) :: GenServer.on_start()
-  def start_link([client]) do
+  @spec start_link(client :: pid) :: GenServer.on_start()
+  def start_link(client) do
     GenServer.start_link(__MODULE__, %State{client: client})
   end
 

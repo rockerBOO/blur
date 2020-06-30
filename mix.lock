@@ -1,6 +1,6 @@
 %{
   "amnesia": {:hex, :amnesia, "0.2.8", "81199a1c4c8db886cfb8ea159f746d5ffdb188bee96cb944f63bdb4465b09fa0", [:mix], [{:exquisite, "~> 0.1.7", [hex: :exquisite, repo: "hexpm", optional: false]}], "hexpm", "6037898c974457809ffa1f9a74cccab8f48c99b206aee9b3fc7bb3af73b06b14"},
-  "con_cache": {:hex, :con_cache, "0.9.0", "a0b8240e1c0b18ac084bf6d4e2ed2e351a8eff5c65e3118e9d3da0cbb4995def", [:mix], [{:exactor, "~> 2.2.0", [hex: :exactor, repo: "hexpm", optional: false]}], "hexpm", "600b122653d7e5f6414bb0728fa6133c656e2d24fad7f0a31bb89c1c70ec68bb"},
+  "con_cache": {:hex, :con_cache, "0.14.0", "863acb90fa08017be3129074993af944cf7a4b6c3ee7c06c5cd0ed6b94fbc223", [:mix], [], "hexpm", "50887a8949377d0b707a3c6653b7610de06074751b52d0f267f52135f391aece"},
   "dialyxir": {:hex, :dialyxir, "1.0.0", "6a1fa629f7881a9f5aaf3a78f094b2a51a0357c843871b8bc98824e7342d00a5", [:mix], [{:erlex, ">= 0.2.6", [hex: :erlex, repo: "hexpm", optional: false]}], "hexpm", "aeb06588145fac14ca08d8061a142d52753dbc2cf7f0d00fc1013f53f8654654"},
   "dogma": {:hex, :dogma, "0.1.8", "1ee856ed64f3ad635a4b2127beea427ea1b9bc271b8731679a97938e1827730f", [:mix], [{:poison, ">= 1.0.0", [hex: :poison, repo: "hexpm", optional: false]}], "hexpm", "3b145724262b12e3d9599c1901cbdf9833f353c03d662db212f15a8698ba5f3c"},
   "earmark": {:hex, :earmark, "1.4.6", "f14260802d8998f30e1654189a0d1699c4aa7d099eb4dad904eb5f41283a70b2", [:mix], [], "hexpm", "c1653a90f63400d029b783a098f4d70a40418ddff14da4cc156a0fee9e72e8d6"},

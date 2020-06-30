@@ -24,13 +24,13 @@ defmodule Blur.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :exirc, :con_cache, :httpoison], mod: {Blur.IRC.App, []}]
+    [applications: [:logger, :exirc, :con_cache, :httpoison], mod: {Blur.IRC.Supervisor, []}]
   end
 
   defp deps do
     [
       {:exirc, "~> 1.1"},
-      {:con_cache, "~> 0.9.0"},
+      {:con_cache, "~> 0.13"},
       {:amnesia, "~> 0.2.0"},
       {:poison, "~> 1.5"},
       {:httpoison, "~> 0.7.2"},

@@ -15,6 +15,7 @@ defmodule Blur.IRC.Channel do
   @spec init(client :: pid) :: {:ok, pid}
   def init(client) do
     Client.add_handler(client, self())
+    Logger.debug("Receiving channel changes")
     {:ok, client}
   end
 
@@ -54,7 +55,16 @@ defmodule Blur.IRC.Channel do
   end
 
   # Drops unknown messages
-  def handle_info(_msg, state) do
+  def handle_info(msg, state) do
+    IO.puts("channel unknown")
+    IO.inspect(msg)
+
     {:noreply, state}
+  end
+
+  @impl true
+  def terminate(reason, _state) do
+    IO.inspect(reason)
+    :ok
   end
 end

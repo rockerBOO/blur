@@ -25,4 +25,4 @@ use Mix.Config
 
 # config :logger, handle_sasl_reports: true
 
-config :blur, :autojoin, ["#rockerboo"]
+config :blur, :autojoin, ["#rockerboo", "#mathil1"]

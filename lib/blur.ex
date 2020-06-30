@@ -6,6 +6,20 @@ defmodule Blur do
   require Logger
 
   @doc """
+  Join a channel on the client IRC connection.
+
+  ## Examples
+      iex> Blur.join client, "#channel"
+      :ok
+  """
+  @spec join(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
+  def join(client, "#" <> _ = channel),
+    do: join(client, channel)
+
+  def join(client, channel),
+    do: Blur.IRC.join(client, channel)
+
+  @doc """
   Join a channel.
 
   ## Examples
@@ -16,30 +30,6 @@ defmodule Blur do
   def join(channel),
     do: join(:irc_client, channel)
 
-  @doc """
-  Join a channel on the client IRC connection.
-
-  ## Examples
-      iex> Blur.join client, "#channel"
-      :ok
-  """
-  @spec join(pid | atom, binary) :: :ok | {:error, atom}
-  def join(client, "#" <> _ = channel),
-    do: Blur.IRC.join(client, channel)
-
-  def join(client, channel),
-    do: join(client, "#" <> channel)
-
-  @doc """
-  Leave a channel on the client IRC connection.
-
-  ## Examples
-      iex> Blur.leave client, "#channel"
-      :ok
-  """
-  @spec leave(client :: pid, channel :: binary) :: :ok | {:error, atom}
-  def leave(client, channel),
-    do: Blur.IRC.part(client, channel)
 
   @doc """
   Leave a channel.
@@ -48,9 +38,21 @@ defmodule Blur do
       iex> Blur.leave "#channel"
       :ok
   """
-  @spec leave(channel :: binary) :: :ok | {:error, atom}
+  @spec leave(channel :: charlist) :: :ok | {:error, atom}
   def leave(channel),
     do: leave(:irc_client, channel)
+
+
+  @doc """
+  Leave a channel on the client IRC connection.
+
+  ## Examples
+      iex> Blur.leave client, "#channel"
+      :ok
+  """
+  @spec leave(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
+  def leave(client, channel),
+    do: Blur.IRC.part(client, channel)
 
   @doc """
   Say a message to the channel.

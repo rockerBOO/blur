@@ -60,7 +60,13 @@ defmodule Blur.IRC.Message do
   Handle messages from IRC connection.
   """
   @impl true
-  @spec handle_info({:received, message :: charlist, %ExIRC.SenderInfo{}}, state :: pid) ::
+  @spec handle_info(
+          {:received, message :: charlist, sender :: %ExIRC.SenderInfo{}}
+          | {:received, message :: charlist, %ExIRC.SenderInfo{}, channel :: charlist}
+          | {:mentioned, message :: charlist, sender :: %ExIRC.SenderInfo{}, channel :: charlist}
+          | {:unrecognized, code :: charlist, %ExIRC.Message{}},
+          state :: pid
+        ) ::
           {:noreply, pid}
   def handle_info({:received, message, sender}, state) do
     from = sender.nick
@@ -68,20 +74,12 @@ defmodule Blur.IRC.Message do
     {:noreply, state}
   end
 
-  @spec handle_info(
-          {:received, message :: charlist, %ExIRC.SenderInfo{}, channel :: charlist},
-          pid
-        ) :: {:noreply, pid}
   def handle_info({:received, message, sender, channel}, state) do
     from = sender.nick
     Logger.debug("#{channel} #{from}: #{message}")
     {:noreply, state}
   end
 
-  @spec handle_info(
-          {:mentioned, message :: charlist, sender :: %ExIRC.SenderInfo{}, channel :: charlist},
-          pid
-        ) :: {:noreply, pid}
   def handle_info({:mentioned, message, sender, channel}, state) do
     from = sender.nick
     Logger.debug("#{from} mentioned us in #{channel}: #{message}")
@@ -90,21 +88,20 @@ defmodule Blur.IRC.Message do
 
   # Uncaught end names list
   #  {:unrecognized, "366", %ExIRC.Message{args: ["800807", "#rockerboo", "End of /NAMES list"], cmd: "366", ctcp: false, host: [], nick: [], server: "800807.tmi.twitch.tv", user: []}}
-  @spec handle_info({:unrecognized, code :: charlist, %ExIRC.Message{}}, pid) :: {:noreply, pid}
   def handle_info({:unrecognized, "366", _}, state) do
+    Logger.debug("Hello there cowboy")
     {:noreply, state}
   end
 
   # CAP reply
-  @spec handle_info({:unrecognized, code :: charlist, %ExIRC.Message{}}, pid) :: {:noreply, pid}
   def handle_info({:unrecognized, "CAP", _}, state) do
     {:noreply, state}
   end
 
   # Tagged message
-  @spec handle_info({:unrecognized, code :: charlist, msg :: %ExIRC.Message{}}, pid) ::
-          {:noreply, pid}
   def handle_info({:unrecognized, "@" <> cmd, msg}, state) do
+    IO.puts("hello")
+
     opts =
       Blur.Parser.Twitch.parse(cmd)
       |> Enum.reduce(%{}, fn [k, v], acc -> Map.put(acc, k, v) end)
@@ -117,7 +114,16 @@ defmodule Blur.IRC.Message do
   end
 
   # Drop uncaught messages
-  def handle_info(_info, state) do
+  def handle_info(info, state) do
+    IO.puts("uncaught")
+    IO.inspect(info)
     {:noreply, state}
+  end
+
+  @impl true
+  def terminate(reason, _state) do
+    IO.inspect("terminate #{__MODULE__}")
+    IO.inspect(reason)
+    :ok
   end
 end

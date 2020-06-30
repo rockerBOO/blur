@@ -1,4 +1,4 @@
-defmodule Blur.IRC.App do
+defmodule Blur.IRC.Supervisor do
   @moduledoc """
   Blur IRC App Supervisor
 
@@ -12,7 +12,7 @@ defmodule Blur.IRC.App do
   require Logger
   alias ExIRC.Client
 
-  @spec start(atom, list) :: GenServer.on_start
+  @spec start(atom, list) :: GenServer.on_start()
   def start(_type, opts) do
     Supervisor.start_link(__MODULE__, :ok, opts)
   end
@@ -26,9 +26,9 @@ defmodule Blur.IRC.App do
     Process.register(irc_client, :irc_client)
 
     children = [
-      worker(ConCache, [[], [name: :channels_config]]),
-      {Blur.IRC.Connection, [irc_client]},
-      {Blur.IRC.Login, [irc_client, ["#rockerboo", "#firstcrimson"]]}
+      {ConCache, [name: :my_cache, ttl_check_interval: false]},
+      {Blur.IRC.Connection, irc_client},
+      {Blur.IRC.Login, irc_client}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

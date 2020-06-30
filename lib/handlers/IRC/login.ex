@@ -10,16 +10,21 @@ defmodule Blur.IRC.Login do
   @doc """
   Start login handler
   """
-  @spec start_link(list) :: GenServer.on_start()
-  def start_link([client, channels]) do
-    GenServer.start_link(__MODULE__, [client, channels])
+  @spec start_link(pid) :: GenServer.on_start()
+  def start_link(client) do
+    GenServer.start_link(__MODULE__, client)
   end
 
   @impl true
-  @spec init(list) :: {:ok, list}
-  def init([client, channels]) do
+  @spec init(pid) :: {:ok, pid}
+  def init(client) do
     Client.add_handler(client, self())
-    {:ok, [client, channels]}
+    {:ok, client}
+  end
+
+  @spec autojoin(client :: pid) :: :ok
+  def autojoin(client) do
+    client |> Blur.IRC.join_many(Application.get_env(:blur, :autojoin))
   end
 
   @doc """
@@ -27,21 +32,21 @@ defmodule Blur.IRC.Login do
   """
   @impl true
   @spec handle_info(:logged_in, list) :: {:noreply, list}
-  def handle_info(:logged_in, [client, channels]) do
+  def handle_info(:logged_in, client) do
     Logger.debug("Logged in as #{Blur.Env.fetch(:username)}")
 
     Blur.IRC.request_twitch_capabilities(client)
 
-    Logger.debug("Joining channels #{Enum.join(channels, ", ")}")
-    Blur.IRC.join_many(client, channels)
+    Logger.debug("Joining channels #{Enum.join(Application.get_env(:blur, :autojoin), ", ")}")
+    autojoin(client)
 
     Logger.debug("Start channels ...")
-    Blur.IRC.Channel.start_link(client)
+    {:ok, _} = Blur.IRC.Channel.start_link(client)
 
     Logger.debug("Start messages ...")
-    Blur.IRC.Message.start_link(client)
+    {:ok, _} = Blur.IRC.Message.start_link(client)
 
-    {:noreply, [client, channels]}
+    {:noreply, client}
   end
 
   # Drops unknown messages

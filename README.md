@@ -3,6 +3,8 @@ Blur
 
 Chat Bot for Streamers. Built to scale. Fast, efficient processing.
 
+![Elixir CI](https://github.com/rockerBOO/blur/workflows/Elixir%20CI/badge.svg)
+
 ## Install
 
 To setup, the configuration options are in `.env`. `.env.example` is setup to show how to configure, and just rename to `.env`.

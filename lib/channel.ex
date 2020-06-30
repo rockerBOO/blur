@@ -32,15 +32,15 @@ defmodule Blur.Channel do
   def start_link(client, "#" <> _ = channel) do
     GenServer.start_link(
       __MODULE__,
-      [client, channel]
+      {client, channel}
     )
   end
 
   def start_link(client, channel), do: start_link(client, "#" <> channel)
 
   @impl true
-  @spec init(list) :: {:ok, %State{}}
-  def init([client, channel]) do
+  @spec init(tuple) :: {:ok, %State{}}
+  def init({client, channel}) do
     config? = channel |> Config.load_channel_config()
 
     {:ok, users} = Blur.Channel.Users.start_link(channel)
@@ -124,19 +124,19 @@ defmodule Blur.Channel do
   Handle channel info
   """
   @impl true
-  @spec handle_call(:aliases, pid, %State{}) :: {:reply, map, %State{}}
+  @spec handle_call(:aliases, tuple, %State{}) :: {:reply, map, %State{}}
   def handle_call(:aliases, _from, state),
     do: {:reply, Config.get("#{state.channel}-aliases"), state}
 
-  @spec handle_call(:commands, pid, %State{}) :: {:reply, map, %State{}}
+  @spec handle_call(:commands, tuple, %State{}) :: {:reply, map, %State{}}
   def handle_call(:commands, _from, state),
     do: {:reply, Config.get("#{state.channel}-commands"), state}
 
-  @spec handle_call(:config?, pid, %State{}) :: {:reply, nil | map, %State{}}
+  @spec handle_call(:config?, tuple, %State{}) :: {:reply, nil | map, %State{}}
   def handle_call(:config?, _from, state),
     do: {:reply, state.config?, state}
 
-  @spec handle_call(:users, pid, %State{}) :: {:reply, list, %State{}}
+  @spec handle_call(:users, tuple, %State{}) :: {:reply, list, %State{}}
   def handle_call(:users, _from, state) do
     {:reply, Blur.Channel.Users.list(state.channel), state}
   end
@@ -145,13 +145,14 @@ defmodule Blur.Channel do
   Handle channel users
   """
   @impl true
-  @spec handle_cast({:add_user, user :: binary}, %State{}) :: {:reply, list, %State{}}
+  @spec handle_cast({:add_user, user :: binary}, %State{}) :: {:noreply, %State{}}
   def handle_cast({:add_user, user}, state) do
     Blur.Channel.Users.add(state.channel, user)
 
     {:noreply, state}
   end
 
+  @spec handle_cast({:remove_user, user :: binary}, %State{}) :: {:noreply, %State{}}
   def handle_cast({:remove_user, user}, state) do
     Blur.Channel.Users.remove(state.channel, user)
 
