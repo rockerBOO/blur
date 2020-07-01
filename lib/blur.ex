@@ -30,7 +30,6 @@ defmodule Blur do
   def join(channel),
     do: join(:irc_client, channel)
 
-
   @doc """
   Leave a channel.
 
@@ -41,7 +40,6 @@ defmodule Blur do
   @spec leave(channel :: charlist) :: :ok | {:error, atom}
   def leave(channel),
     do: leave(:irc_client, channel)
-
 
   @doc """
   Leave a channel on the client IRC connection.

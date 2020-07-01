@@ -79,7 +79,8 @@ defmodule Blur.IRC do
       iex> Blur.IRC.login client, "rockerBOO", "oauth:oauthhashherewithlettersandnumbers"
       :ok
   """
-  @spec login(client :: pid | atom, nick :: binary, pass :: binary) :: :ok | {:error, :not_connected}
+  @spec login(client :: pid | atom, nick :: binary, pass :: binary) ::
+          :ok | {:error, :not_connected}
   def login(client, nick, pass),
     do: ExIRC.Client.logon(client, pass, nick, nick, nick)
 
@@ -103,7 +104,7 @@ defmodule Blur.IRC do
   """
   @spec join(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
   def join(client, "#" <> _ = channel) do
-    Logger.debug("Join #{channel}")
+    Logger.debug("Join #{channel}...")
     ExIRC.Client.join(client, channel)
   end
 
@@ -119,7 +120,7 @@ defmodule Blur.IRC do
   """
   @spec part(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
   def part(client, "#" <> _ = channel) do
-    Logger.debug("Part #{channel}")
+    Logger.debug("Part #{channel}...")
     ExIRC.Client.part(client, channel)
   end
 

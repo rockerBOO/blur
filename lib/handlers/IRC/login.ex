@@ -40,12 +40,6 @@ defmodule Blur.IRC.Login do
     Logger.debug("Joining channels #{Enum.join(Application.get_env(:blur, :autojoin), ", ")}")
     autojoin(client)
 
-    Logger.debug("Start channels ...")
-    {:ok, _} = Blur.IRC.Channel.start_link(client)
-
-    Logger.debug("Start messages ...")
-    {:ok, _} = Blur.IRC.Message.start_link(client)
-
     {:noreply, client}
   end
 

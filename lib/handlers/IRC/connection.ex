@@ -23,7 +23,9 @@ defmodule Blur.IRC.Connection do
 
   @impl true
   @spec handle_info(
-          {:connected, server :: binary, port :: non_neg_integer()},
+          {:connected, server :: binary, port :: non_neg_integer()}
+          | {:disconnected}
+          | {:disconnected, cmd :: binary, msg :: binary},
           %State{}
         ) :: {:noreply, %State{}}
   def handle_info({:connected, server, port}, state) do
@@ -37,17 +39,14 @@ defmodule Blur.IRC.Connection do
     {:noreply, state}
   end
 
-  @spec handle_info({:disconnected}, %State{}) ::
-          {:noreply, %State{}}
   def handle_info({:disconnected}, state) do
     Logger.debug(":disconnected")
 
     {:noreply, state}
   end
 
-  @spec handle_info({:disconnected, cmd :: binary, msg :: binary}, %State{}) ::
-          {:noreply, %State{}}
   def handle_info({:disconnected, "@" <> _cmd, _msg}, state) do
+    Logger.debug(":disconnected")
     {:noreply, state}
   end
 

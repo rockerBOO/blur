@@ -26,9 +26,12 @@ defmodule Blur.IRC.Supervisor do
     Process.register(irc_client, :irc_client)
 
     children = [
-      {ConCache, [name: :my_cache, ttl_check_interval: false]},
+      {ConCache, [name: :channel_cache, ttl_check_interval: false]},
       {Blur.IRC.Connection, irc_client},
-      {Blur.IRC.Login, irc_client}
+      {Blur.IRC.Login, irc_client},
+      {Blur.IRC.Channel, irc_client},
+      {Blur.IRC.Message, irc_client},
+      {Blur.IRC.Names, irc_client}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
