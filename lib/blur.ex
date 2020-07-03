@@ -9,10 +9,10 @@ defmodule Blur do
   Join a channel on the client IRC connection.
 
   ## Examples
-      iex> Blur.join client, "#channel"
+      iex> Blur.join :blur_irc_client, "#channel"
       :ok
   """
-  @spec join(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
+  @spec join(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
   def join(client, "#" <> _ = channel),
     do: join(client, channel)
 
@@ -20,48 +20,15 @@ defmodule Blur do
     do: Blur.IRC.join(client, channel)
 
   @doc """
-  Join a channel.
-
-  ## Examples
-      iex> Blur.join "#channel"
-      :ok
-  """
-  @spec join(channel :: binary) :: :ok | {:error, atom}
-  def join(channel),
-    do: join(:irc_client, channel)
-
-  @doc """
-  Leave a channel.
-
-  ## Examples
-      iex> Blur.leave "#channel"
-      :ok
-  """
-  @spec leave(channel :: charlist) :: :ok | {:error, atom}
-  def leave(channel),
-    do: leave(:irc_client, channel)
-
-  @doc """
   Leave a channel on the client IRC connection.
 
   ## Examples
-      iex> Blur.leave client, "#channel"
-      :ok
+      iex> Blur.leave :blur_irc_client, "#channel"
+      {:error, :not_logged_in}
   """
-  @spec leave(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
+  @spec leave(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
   def leave(client, channel),
     do: Blur.IRC.part(client, channel)
-
-  @doc """
-  Say a message to the channel.
-
-  ## Examples
-      iex> Blur.say "#channel", "a message to the channel"
-      :ok
-  """
-  @spec say(channel :: charlist, msg :: charlist) :: :ok | {:error, atom}
-  def say(channel, msg),
-    do: Blur.IRC.say(:irc_client, channel, msg)
 
   @doc """
   Get token from the environmental variables.

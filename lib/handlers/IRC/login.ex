@@ -10,19 +10,19 @@ defmodule Blur.IRC.Login do
   @doc """
   Start login handler
   """
-  @spec start_link(pid) :: GenServer.on_start()
+  @spec start_link(GenServer.server()) :: GenServer.on_start()
   def start_link(client) do
     GenServer.start_link(__MODULE__, client)
   end
 
   @impl true
-  @spec init(pid) :: {:ok, pid}
+  @spec init(client :: GenServer.server()) :: {:ok, GenServer.server()}
   def init(client) do
     Client.add_handler(client, self())
     {:ok, client}
   end
 
-  @spec autojoin(client :: pid) :: :ok
+  @spec autojoin(client :: GenServer.server()) :: :ok
   def autojoin(client) do
     client |> Blur.IRC.join_many(Application.get_env(:blur, :autojoin))
   end
@@ -37,7 +37,7 @@ defmodule Blur.IRC.Login do
 
     Blur.IRC.request_twitch_capabilities(client)
 
-    Logger.debug("Joining channels #{Enum.join(Application.get_env(:blur, :autojoin), ", ")}")
+    Logger.debug("Joining channels [#{Enum.join(Application.get_env(:blur, :autojoin), ", ")}]")
     autojoin(client)
 
     {:noreply, client}

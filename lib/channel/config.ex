@@ -7,7 +7,7 @@ defmodule Blur.Channel.Config do
 
   require Logger
 
-  def load_channel_config(channel) do
+  def load_config(channel) do
     load(channel, ["config", "commands", "aliases"])
 
     # check if commands were loaded for channel

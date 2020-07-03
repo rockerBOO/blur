@@ -11,7 +11,7 @@ defmodule Blur.IRC.Channel do
     GenServer.start_link(__MODULE__, client)
   end
 
-  @impl true
+  @impl GenServer
   @spec init(client :: pid) :: {:ok, pid}
   def init(client) do
     Client.add_handler(client, self())
@@ -21,7 +21,7 @@ defmodule Blur.IRC.Channel do
   @doc """
   Handle channel messages
   """
-  @impl true
+  @impl GenServer
   @spec handle_info(
           {:joined, channel :: charlist}
           | {:joined, channel :: charlist, sender :: %ExIRC.SenderInfo{}}

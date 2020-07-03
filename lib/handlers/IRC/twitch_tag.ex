@@ -1,5 +1,8 @@
 defmodule Blur.IRC.TwitchTag do
   @moduledoc """
+  Handle all the following tags. 
+  https://dev.twitch.tv/docs/irc/tags/
+
   # User
   display-name: The user’s display name
   badge-info: indicate the exact number of months the user has been a subscriber. 
@@ -66,7 +69,6 @@ defmodule Blur.IRC.TwitchTag do
       [server] -> {"", "", server}
     end
   end
-
 
   @doc """
   Parse out message from tagged message.

@@ -14,13 +14,13 @@ defmodule Blur.IRC.Message do
   @doc """
   Start message handler.
   """
-  @spec start_link(client :: pid | atom) :: GenServer.on_start()
+  @spec start_link(client :: GenServer.server()) :: GenServer.on_start()
   def start_link(client) do
     GenServer.start_link(__MODULE__, client)
   end
 
   @impl true
-  @spec init(client :: pid | atom) :: {:ok, pid | atom}
+  @spec init(client :: GenServer.server()) :: {:ok, pid | atom}
   def init(client) do
     Client.add_handler(client, self())
     Logger.debug("Receiving messages")
@@ -41,7 +41,6 @@ defmodule Blur.IRC.Message do
 
     :ok
   end
-
 
   @doc """
   Handle messages from IRC connection.
