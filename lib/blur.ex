@@ -31,6 +31,12 @@ defmodule Blur do
     do: Blur.IRC.part(client, channel)
 
   @doc """
+
+  """
+  def say(client, channel, message),
+    do: Blur.IRC.say(client, channel, message)
+
+  @doc """
   Get token from the environmental variables.
   """
   @spec token() :: nil | binary

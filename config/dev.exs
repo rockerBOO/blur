@@ -1,3 +1,3 @@
 import Config
 
-config :blur, :autojoin, []
+config :blur, :autojoin, ["rockerboo", "adattape"]

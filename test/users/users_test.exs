@@ -15,15 +15,15 @@ defmodule Blur.UsersTest do
 
     assert :ok === Blur.Channel.remove_user(pid, %User{name: "rockerboo"})
 
-    assert Blur.Channel.user(pid, %User{name: "rockerboo"})
+    assert Blur.Channel.find_user(pid, %User{name: "rockerboo"}) === %User{}
   end
 
-  test "user" do
+  test "find_user" do
     pid = start_supervised!({Blur.Channel, []})
 
     Blur.Channel.add_user(pid, %User{name: "rockerboo"})
 
-    assert %User{name: "rockerboo"} === Blur.Channel.user(pid, %User{name: "rockerboo"})
+    assert %User{name: "rockerboo"} === Blur.Channel.find_user(pid, %User{name: "rockerboo"})
   end
 
   test "users" do

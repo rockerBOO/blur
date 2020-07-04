@@ -16,14 +16,14 @@ defmodule Blur.IRC.Names do
     GenServer.start_link(__MODULE__, client)
   end
 
-  @impl true
+  @impl GenServer
   @spec init(client :: pid) :: {:ok, pid}
   def init(client) do
     ExIRC.Client.add_handler(client, self())
     {:ok, client}
   end
 
-  @impl true
+  @impl GenServer
   @spec handle_info(
           {:names_list, channel :: charlist, names :: charlist}
           | {:joined, channel :: charlist, user :: %ExIRC.SenderInfo{}}

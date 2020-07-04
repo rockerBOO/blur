@@ -12,24 +12,19 @@ defmodule Blur.IRC.Supervisor do
   require Logger
   alias ExIRC.Client
 
-  def start_link([]) do
-    Supervisor.start_link(__MODULE__, :ok)
+  def start_link() do
+    {:ok, irc_client} = Client.start_link()
+
+    Supervisor.start_link(__MODULE__, irc_client)
   end
 
   @spec start(module, list) :: GenServer.on_start()
   def start(_type, opts) do
-    Supervisor.start_link(__MODULE__, :ok, opts)
+    GenServer.start_link(__MODULE__, :ok, opts)
   end
 
   @impl true
-  def init(:ok) do
-    {:ok, irc_client} = Client.start_link()
-
-    # Register :irc_client for easy access for commands. Better idea?
-    Process.register(irc_client, :twitch)
-
-    IO.inspect(:twitch)
-
+  def init(irc_client) do
     children = [
       {ConCache, [name: :channel_cache, ttl_check_interval: false]},
       {Blur.IRC.Connection, irc_client},

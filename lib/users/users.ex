@@ -35,9 +35,9 @@ defmodule Blur.Users do
   @doc """
   Get user
   """
-  @spec(user(pid :: GenServer.server(), user :: %User{}) :: :ok, {:error, atom})
-  def user(pid, user),
-    do: GenServer.call(pid, {:user, user})
+  @spec find_user(pid :: GenServer.server(), user :: %User{}) :: %User{}
+  def find_user(pid, user),
+    do: GenServer.call(pid, {:find_user, user})
 
   @doc """
   Get users
@@ -46,26 +46,29 @@ defmodule Blur.Users do
   def users(pid),
     do: GenServer.call(pid, {:users})
 
+  # Handlers
+  # -=-=-=-=-=-=-=-=-=
+
   @impl GenServer
   @spec handle_cast(
           {:add_user, user :: %User{}} | {:remove_user, user :: %User{}},
           state :: list
         ) :: {:noreply, list}
   def handle_cast({:add_user, user}, state),
-    do: {:noreply,  state ++ [user]}
+    do: {:noreply, state ++ [user]}
 
   def handle_cast({:remove_user, user}, state),
     do: {:noreply, Enum.filter(state, fn u -> u !== user end)}
 
   @impl GenServer
   @spec handle_call(
-          {:user, user :: %User{}} | {:users},
+          {:find_user, user :: %User{}} | {:users},
           from :: {pid, tag :: term},
           state :: list
         ) ::
           {:reply, reply :: %User{} | list, new_state :: list}
-  def handle_call({:user, user}, _from, state),
-    do: {:reply, Enum.find(state, %User{}, fn u -> u === user end), state}
+  def handle_call({:find_user, user}, _from, state),
+    do: {:reply, Enum.find(state, %User{}, fn u -> u.name === user.name end), state}
 
   def handle_call({:users}, _from, state),
     do: {:reply, state, state}
