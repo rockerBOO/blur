@@ -1,9 +1,6 @@
 defmodule Blur.Supervisor do
   @moduledoc """
   Blur App Supervisor
-
-  Children
-  * ConCache
   """
 
   use Supervisor

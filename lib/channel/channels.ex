@@ -5,8 +5,9 @@ defmodule Blur.Channels do
     GenServer.start_link(__MODULE__, :ok)
   end
 
+  @impl GenServer
   def init(:ok) do
-    {:ok, %{client: nil}}
+    {:ok, []}
   end
 
   @doc """
@@ -28,24 +29,40 @@ defmodule Blur.Channels do
   @doc """
   Find channel
   """
-  @spec find(pid, channel :: binary) :: map
+  @spec find(pid, channel :: binary) :: [{binary, GenServer.server()}]
   def find(pid, channel) do
     GenServer.call(pid, {:find, channel})
   end
 
-  @spec handle_cast({:add, channel :: binary} | {:delete, channel :: binary}, map) ::
-          {:noreply, map}
-  def handle_cast({:add, channel}, channels) do
+  @doc """
+  Get the list of channels, with their process
+  """
+  @spec channels(pid :: GenServer.server()) :: [{binary, GenServer.server()}]
+  def channels(pid), do: GenServer.call(pid, {:channels})
+
+  @impl GenServer
+  @spec handle_cast(
+          {:add, channel :: binary}
+          | {:delete, channel :: binary},
+          [{binary, GenServer.server()}]
+        ) ::
+          {:noreply, [{binary, GenServer.server()}]}
+  def handle_cast({:add, channel}, state) do
     {:ok, pid} = Blur.Channel.start_link(channel)
-    {:noreply, Map.put(channels, channel, pid)}
+    {:noreply, state ++ [{channel, pid}]}
   end
 
-  def handle_cast({:delete, channel}, channels) do
-    {:noreply, Map.delete(channels, channel)}
+  def handle_cast({:delete, channel}, state) do
+    {:noreply, Enum.filter(state, fn {chan, _} -> chan !== channel end)}
   end
 
-  @spec handle_call({:find, charlist}, map) :: {:noreply, :error | {:ok, pid}}
-  def handle_call({:find, channel}, channels) do
-    {:noreply, Map.fetch(channels, channel)}
+  @impl GenServer
+  @spec handle_call({:find, channel :: charlist} | {:channels}, from :: tuple, state :: list) ::
+          {:reply, [{binary, GenServer.server()}] | {binary, GenServer.server()},
+           :error | {:ok, pid}}
+  def handle_call({:find, channel}, _from, state) do
+    {:reply, Enum.find(state, fn {chan, _} -> chan === channel end), state}
   end
+
+  def handle_call({:channels}, _from, state), do: {:reply, state, state}
 end

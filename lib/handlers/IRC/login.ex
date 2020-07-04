@@ -15,7 +15,7 @@ defmodule Blur.IRC.Login do
     GenServer.start_link(__MODULE__, client)
   end
 
-  @impl true
+  @impl GenServer
   @spec init(client :: GenServer.server()) :: {:ok, GenServer.server()}
   def init(client) do
     Client.add_handler(client, self())
@@ -28,14 +28,12 @@ defmodule Blur.IRC.Login do
   end
 
   @doc """
-  Handle user login
+  Handle login messages
   """
-  @impl true
+  @impl GenServer
   @spec handle_info(:logged_in, list) :: {:noreply, list}
   def handle_info(:logged_in, client) do
     Logger.debug("Logged in as #{Blur.Env.fetch(:username)}")
-
-    Blur.IRC.request_twitch_capabilities(client)
 
     Logger.debug("Joining channels [#{Enum.join(Application.get_env(:blur, :autojoin), ", ")}]")
     autojoin(client)

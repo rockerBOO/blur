@@ -7,12 +7,25 @@ defmodule Blur.IRC.Connection do
   use GenServer
   alias Blur.IRC.Connection.State
 
+  defmodule State do
+    @moduledoc """
+    IRC connection state
+    """
+    defstruct host: "irc.twitch.tv",
+              port: 6667,
+              nick: "",
+              user: "",
+              name: "",
+              debug?: true,
+              client: nil
+  end
+
   @spec start_link(client :: GenServer.server()) :: GenServer.on_start()
   def start_link(client) do
     GenServer.start_link(__MODULE__, %State{client: client})
   end
 
-  @impl true
+  @impl GenServer
   @spec init(%State{}) :: {:ok, %State{}}
   def init(state) do
     ExIRC.Client.add_handler(state.client, self())
@@ -21,7 +34,7 @@ defmodule Blur.IRC.Connection do
     {:ok, state}
   end
 
-  @impl true
+  @impl GenServer
   @spec handle_info(
           {:connected, server :: binary, port :: non_neg_integer()}
           | {:disconnected}
@@ -36,15 +49,20 @@ defmodule Blur.IRC.Connection do
     # Login to IRC
     :ok = Blur.IRC.login(state.client, nick, Blur.token())
 
+    # Request Twitch Capabilities (tags)
+    :ok = Blur.IRC.request_twitch_capabilities(state.client)
+
     {:noreply, state}
   end
 
+  # Handle disconnection
   def handle_info({:disconnected}, state) do
     Logger.debug(":disconnected")
 
     {:noreply, state}
   end
 
+  # Handle tagged message disconnect
   def handle_info({:disconnected, "@" <> _cmd, _msg}, state) do
     Logger.debug(":disconnected")
     {:noreply, state}

@@ -23,7 +23,6 @@ defmodule Blur.IRC.Message do
   @spec init(client :: GenServer.server()) :: {:ok, pid | atom}
   def init(client) do
     Client.add_handler(client, self())
-    Logger.debug("Receiving messages")
     {:ok, client}
   end
 
@@ -54,18 +53,22 @@ defmodule Blur.IRC.Message do
           state :: pid
         ) ::
           {:noreply, pid}
+
+  # Private messages. (Unsure if used by Twitch)
   def handle_info({:received, message, sender}, state) do
     from = sender.nick
     Logger.debug("#{from} sent us a private message: #{message}")
     {:noreply, state}
   end
 
+  # Handle received messages. Tagged messages don't land here current.
   def handle_info({:received, message, sender, channel}, state) do
     from = sender.nick
     Logger.debug("#{channel} #{from}: #{message}")
     {:noreply, state}
   end
 
+  # Mentioned message. (Unsure if used by Twitch)
   def handle_info({:mentioned, message, sender, channel}, state) do
     from = sender.nick
     Logger.debug("#{from} mentioned us in #{channel}: #{message}")

@@ -20,7 +20,9 @@ defmodule Blur.IRC.Supervisor do
 
   @spec start(module, list) :: GenServer.on_start()
   def start(_type, opts) do
-    GenServer.start_link(__MODULE__, :ok, opts)
+    {:ok, irc_client} = Client.start_link()
+
+    Supervisor.start_link(__MODULE__, irc_client, opts)
   end
 
   @impl true

@@ -54,9 +54,12 @@ defmodule Blur.Users do
           {:add_user, user :: %User{}} | {:remove_user, user :: %User{}},
           state :: list
         ) :: {:noreply, list}
+
+  # Add user to list of users
   def handle_cast({:add_user, user}, state),
     do: {:noreply, state ++ [user]}
 
+  # Remove user from list of users
   def handle_cast({:remove_user, user}, state),
     do: {:noreply, Enum.filter(state, fn u -> u !== user end)}
 

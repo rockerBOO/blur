@@ -8,13 +8,13 @@ defmodule Blur.IRC.TwitchTag do
   badge-info: indicate the exact number of months the user has been a subscriber. 
   badges: Comma-separated list of chat badges and the version of each badge 
   color: Hexadecimal RGB color code; the empty string if it is never set.
-  user-id: The user's ID.user
+  user-id: The user's ID.
 
   # Messages
   bits: (Sent only for Bits messages) The amount of cheer/Bits employed by the user.
   emote-sets: A comma-separated list of emotes, belonging to one or more emote sets.
   emotes: Information to replace text in the message with emote images. This can be empty.
-  mod:  1 if the user has a moderator badge; otherwise, 0.
+  mod: 1 if the user has a moderator badge; otherwise, 0.
   room-id: The channel ID.
   tmi-sent-ts: Timestamp when the server received the message.
 
@@ -49,6 +49,10 @@ defmodule Blur.IRC.TwitchTag do
   msg-param-threshold   (Sent only on bitsbadgetier) The tier of the bits badge the user just earned; e.g. 100, 1000, 10000.
   """
 
+  @doc """
+  Convert twitch tags to a map.
+  """
+  @spec to_map(cmd :: binary) :: map
   def to_map(cmd) do
     Blur.Parser.Twitch.parse(cmd)
     |> Enum.reduce(%{}, fn [k, v], acc -> Map.put(acc, k, v) end)
@@ -61,7 +65,6 @@ defmodule Blur.IRC.TwitchTag do
       iex> Blur.IRC.TwitchTag.parse_server("red_stone_dragon!red_stone_dragon@red_stone_dragon.tmi.twitch.tv")
       {"red_stone_dragon","red_stone_dragon","red_stone_dragon.tmi.twitch.tv"}
   """
-
   @spec parse_server(connection_string :: binary) :: {binary, binary, binary}
   def parse_server(connection_string) do
     case String.split(connection_string, ["!", "@"]) do
