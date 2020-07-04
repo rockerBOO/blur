@@ -4,6 +4,7 @@ Blur
 Chat Bot for Streamers. Built to scale. Fast, efficient processing.
 
 ![Elixir CI](https://github.com/rockerBOO/blur/workflows/Elixir%20CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/rockerBOO/blur/badge.svg)](https://coveralls.io/github/rockerBOO/blur)
 
 ## Install
 
