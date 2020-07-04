@@ -10,6 +10,7 @@ defmodule Blur.Channel do
   require Logger
   alias Blur.Users
   alias Blur.User
+  alias Blur.Channel.Config
 
   @spec start_link(channel :: binary, users :: list) :: GenServer.on_start()
   def start_link(channel, users \\ []) do
@@ -18,11 +19,11 @@ defmodule Blur.Channel do
 
   @impl GenServer
   def init({channel, users}) do
-    # config? = load_config(channel)
+    config? = Config.load_from_json(channel, "config")
 
     {:ok, users} = Blur.Users.start_link(users)
 
-    {:ok, %State{channel: channel, users: users}}
+    {:ok, %State{channel: channel, users: users, config?: config?}}
   end
 
   @doc """
