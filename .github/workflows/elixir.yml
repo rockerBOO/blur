@@ -29,5 +29,4 @@ jobs:
       run: mix deps.get
     - name: Run Tests
       run: mix test
-    - name: Run Coverage
       run: mix coveralls.github
