@@ -9,8 +9,9 @@ defmodule Blur do
   Join a channel on the client IRC connection.
 
   ## Examples
-      iex> Blur.join :twitch, "#channel"
-      :ok
+    
+    Blur.join :twitch, "#channel"
+    :ok
   """
   @spec join(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
   def join(client, "#" <> _ = channel),
@@ -23,8 +24,9 @@ defmodule Blur do
   Leave a channel on the client IRC connection.
 
   ## Examples
-      iex> Blur.leave :twitch, "#channel"
-      {:error, :not_logged_in}
+      
+    Blur.leave :twitch, "#channel"
+    {:error, :not_logged_in}
   """
   @spec leave(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
   def leave(client, channel),
@@ -34,7 +36,7 @@ defmodule Blur do
   Say a message to the channel.
 
   ## Examples
-      iex> Blur.say :twitch, "adattape"
+      Blur.say :twitch, "adattape"
   """
   def say(client, channel, message),
     do: Blur.IRC.say(client, channel, message)

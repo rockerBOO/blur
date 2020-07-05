@@ -1,5 +1,5 @@
 defmodule Blur.ChannelsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Blur.Channels
 
   doctest Blur.Channels
