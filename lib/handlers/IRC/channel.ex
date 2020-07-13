@@ -6,8 +6,8 @@ defmodule Blur.IRC.Channel do
   require Logger
   alias ExIRC.Client
 
-  @spec start_link(client :: pid) :: GenServer.on_start()
-  def start_link(client) do
+  @spec start_link([client :: pid]) :: GenServer.on_start()
+  def start_link([client]) do
     GenServer.start_link(__MODULE__, client)
   end
 
@@ -39,24 +39,13 @@ defmodule Blur.IRC.Channel do
     {:noreply, client}
   end
 
-  def handle_info({:logon, _, _nick, _, _}, state) do
-    {:noreply, state}
-  end
-
-  def handle_info({:kicked, sender, channel}, state) do
-    by = sender.nick
-    Logger.debug("We were kicked from #{channel} by #{by}")
-    {:noreply, state}
-  end
-
   # Drops unknown messages
   def handle_info(_msg, state) do
     {:noreply, state}
   end
 
   @impl true
-  def terminate(reason, _state) do
-    IO.inspect(reason)
+  def terminate(_reason, _state) do
     :ok
   end
 end

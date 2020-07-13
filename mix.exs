@@ -34,18 +34,15 @@ defmodule Blur.Mixfile do
 
   def application do
     [
-      applications: [:logger, :exirc, :con_cache, :httpoison]
+      applications: [:logger, :exirc],
+      mod: {Blur.App, ["800807", ["harbleu"]]}
     ]
   end
 
   defp deps do
     [
       {:exirc, "~> 1.1"},
-      {:con_cache, "~> 0.13"},
-      {:amnesia, "~> 0.2.0"},
-      {:poison, "~> 1.5"},
-      {:httpoison, "~> 1.6"},
-      {:logger_file_backend, "~> 0.0.11"},
+      {:poison, "~> 3.1"},
       {:excoveralls, "~> 0.13", only: :test},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false},

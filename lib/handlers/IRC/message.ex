@@ -6,20 +6,17 @@ defmodule Blur.IRC.Message do
   require Logger
   use GenServer
 
-  # alias Blur.Command
-  # alias Blur.Parser.Message
-  # alias Blur.Channel
   alias ExIRC.Client
 
   @doc """
   Start message handler.
   """
-  @spec start_link(client :: GenServer.server()) :: GenServer.on_start()
-  def start_link(client) do
+  @spec start_link([client :: GenServer.server()]) :: GenServer.on_start()
+  def start_link([client]) do
     GenServer.start_link(__MODULE__, client)
   end
 
-  @impl true
+  @impl GenServer
   @spec init(client :: GenServer.server()) :: {:ok, pid | atom}
   def init(client) do
     Client.add_handler(client, self())
@@ -29,22 +26,13 @@ defmodule Blur.IRC.Message do
   @spec parse_message(channel :: binary, user :: binary, msg :: binary) :: :ok
   def parse_message(channel, user, msg) do
     Logger.debug("Parsing message #{channel} #{user}: #{msg}")
-
-    # if Channel.config?(channel) do
-    #   Message.parse(msg, user, channel)
-    #   |> Command.run(user, channel)
-    #   |> case do
-    #     :ok -> Logger.debug("Command send properly")
-    #   end
-    # end
-
     :ok
   end
 
   @doc """
   Handle messages from IRC connection.
   """
-  @impl true
+  @impl GenServer
   @spec handle_info(
           {:received, message :: charlist, sender :: %ExIRC.SenderInfo{}}
           | {:received, message :: charlist, sender :: %ExIRC.SenderInfo{}, channel :: charlist}
@@ -65,13 +53,6 @@ defmodule Blur.IRC.Message do
   def handle_info({:received, message, sender, channel}, state) do
     from = sender.nick
     Logger.debug("#{channel} #{from}: #{message}")
-    {:noreply, state}
-  end
-
-  # Mentioned message. (Unsure if used by Twitch)
-  def handle_info({:mentioned, message, sender, channel}, state) do
-    from = sender.nick
-    Logger.debug("#{from} mentioned us in #{channel}: #{message}")
     {:noreply, state}
   end
 
@@ -104,7 +85,7 @@ defmodule Blur.IRC.Message do
     {:noreply, state}
   end
 
-  @impl true
+  @impl GenServer
   def terminate(reason, _state) do
     IO.inspect("terminate #{__MODULE__}")
     IO.inspect(reason)

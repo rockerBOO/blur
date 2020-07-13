@@ -4,5 +4,4 @@ defmodule Blur.Parser.Message do
 
   * Fix flow
   """
-  require Logger
 end

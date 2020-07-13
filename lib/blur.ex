@@ -1,6 +1,26 @@
 defmodule Blur do
   @moduledoc """
   Access your bot through Blur
+
+  Client
+
+  Handlers
+  - Login
+  on_logon -> join_channels
+  - Connection
+  %ConnState{}
+  on_connection -> login
+  on_disconnection -> logoff
+  - Message
+  pool
+  - Channels
+  on_join -> add_channel
+  [Channel, Channel]
+  - Users
+  on_names -> add_users
+  on_user_join -> add_user
+  on_part -> remove_user
+  [User, User]
   """
 
   require Logger
@@ -36,6 +56,7 @@ defmodule Blur do
   Say a message to the channel.
 
   ## Examples
+
       Blur.say :twitch, "adattape"
   """
   def say(client, channel, message),

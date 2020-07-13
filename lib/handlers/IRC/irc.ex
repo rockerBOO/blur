@@ -11,7 +11,7 @@ defmodule Blur.IRC do
   Request the CAP (capability) on the server
 
   ## Example
-      iex> Blur.IRC.cap_request client, ':twitch.tv/membership'
+      Blur.IRC.cap_request client, ':twitch.tv/membership'
       :ok
   """
   @spec cap_request(client :: pid | atom, cap :: binary) :: :ok | {:error, atom}
@@ -23,7 +23,7 @@ defmodule Blur.IRC do
   Request twitch for capabilities
 
   ## Example
-      iex> Blur.IRC.request_twitch_capabilities client
+      Blur.IRC.request_twitch_capabilities client
       :ok
   """
   @spec request_twitch_capabilities(client :: pid | atom) :: :ok | {:error, atom}
@@ -51,7 +51,7 @@ defmodule Blur.IRC do
   Connect to the IRC server.
 
   ## Example
-      iex> Blur.IRC.connect client, "irc.twitch.tv", 6667
+      Blur.IRC.connect client, "irc.twitch.tv", 6667
       :ok
   """
   @spec connect!(client :: pid | atom, host :: binary, port :: non_neg_integer) :: :ok
@@ -59,24 +59,10 @@ defmodule Blur.IRC do
     do: ExIRC.Client.connect!(client, host, port)
 
   @doc """
-  Connect to the default IRC server.
-
-  ## Example
-      iex> Blur.IRC.connect client
-      :ok
-  """
-  @spec connect!(client :: pid | atom) :: :ok
-  def connect!(client) do
-    %{host: host, port: port} = %Blur.IRC.Connection.State{}
-
-    ExIRC.Client.connect!(client, host, port)
-  end
-
-  @doc """
   Login to the server.
 
   ## Example 
-      iex> Blur.IRC.login client, "rockerBOO", "oauth:oauthhashherewithlettersandnumbers"
+      Blur.IRC.login client, "rockerBOO", "oauth:oauthhashherewithlettersandnumbers"
       :ok
   """
   @spec login(client :: pid | atom, nick :: binary, pass :: binary) ::
@@ -87,7 +73,7 @@ defmodule Blur.IRC do
   @doc """
   Join many channels.
   ## Example 
-      iex> Blur.IRC.join_many client, ["#rockerboo", "#adattape"]
+      Blur.IRC.join_many client, ["#rockerboo", "#adattape"]
       :ok
   """
   @spec join_many(client :: pid | atom | atom, list) :: :ok | {:error, atom}
@@ -99,12 +85,12 @@ defmodule Blur.IRC do
   Join an IRC channel.
 
   ## Example
-      iex> Blur.IRC.join client, "#rockerboo"
+      Blur.IRC.join client, "#rockerboo"
       :ok
   """
   @spec join(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
   def join(client, "#" <> _ = channel) do
-    Logger.debug("Join #{channel}...")
+    Logger.debug("Join #{channel}")
     ExIRC.Client.join(client, channel)
   end
 
@@ -115,12 +101,12 @@ defmodule Blur.IRC do
   Part from IRC channel.
 
   ## Example
-      iex> Blur.IRC.part client, "#rockerboo"
+      Blur.IRC.part client, "#rockerboo"
       :ok
   """
   @spec part(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
   def part(client, "#" <> _ = channel) do
-    Logger.debug("Part #{channel}...")
+    Logger.debug("Part #{channel}")
     ExIRC.Client.part(client, channel)
   end
 
@@ -131,7 +117,7 @@ defmodule Blur.IRC do
   Send a message to the channel
 
   ## Example
-      iex> Blur.IRC.say client, "#rockerboo", "Hello"
+      Blur.IRC.say client, "#rockerboo", "Hello"
       :ok
   """
   @spec say(client :: pid | atom, channel :: binary, msg :: binary) :: :ok | {:error, atom}
@@ -143,7 +129,7 @@ defmodule Blur.IRC do
   Quit the IRC server.
 
   ## Example
-      iex> Blur.IRC.quit client, "Goodbye!"
+      Blur.IRC.quit client, "Goodbye!"
       :ok
   """
   @spec quit(client :: pid | atom, msg :: nil | binary) :: :ok | {:error, atom}
@@ -155,7 +141,7 @@ defmodule Blur.IRC do
   Quit the IRC server with no message.
 
   ## Example
-      iex> Blur.IRC.quit client
+      Blur.IRC.quit client
       :ok
   """
   @spec quit(client :: pid | atom) :: :ok | {:error, atom}
@@ -167,7 +153,7 @@ defmodule Blur.IRC do
   Stop the IRC client process
 
   ## Example
-      iex> Blur.IRC.stop! client
+      Blur.IRC.stop! client
       {:stop, :normal, :ok, %ExIRC.Client{}}
   """
   @spec stop!(client :: pid | atom) :: {:stop, :normal, :ok, %ExIRC.Client.ClientState{}}

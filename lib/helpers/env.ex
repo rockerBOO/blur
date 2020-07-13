@@ -13,7 +13,7 @@ defmodule Blur.Env do
   """
   def fetch!(key) when is_atom(key) do
     case fetch(key) do
-      "" -> raise "Environmetal variable not found"
+      "" -> raise "Environmetal variable not found."
       value -> value
     end
   end
