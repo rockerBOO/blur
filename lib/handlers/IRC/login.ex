@@ -16,32 +16,39 @@ defmodule Blur.IRC.Login do
   end
 
   @impl true
-  @spec init(list) :: {:ok, list}
+  # @spec init([pid, list]) :: {:ok, GenServer.server()}
   def init([client, channels]) do
     Client.add_handler(client, self())
-    {:ok, [client, channels]}
+    {:ok, %{client: client, autojoin: channels}}
+  end
+
+  @spec autojoin(client :: GenServer.server(), channels :: list) :: :ok | {:error, atom}
+  def autojoin(client, channels) do
+    client |> Blur.IRC.join_many(channels)
   end
 
   @doc """
-  Handle user login
+  Handle login messages
   """
   @impl true
-  @spec handle_info(:logged_in, list) :: {:noreply, list}
-  def handle_info(:logged_in, [client, channels]) do
+  @spec handle_info(:logged_in, map) :: {:noreply, list}
+  def handle_info(:logged_in, state) do
     Logger.debug("Logged in as #{Blur.Env.fetch(:username)}")
 
-    Blur.IRC.request_twitch_capabilities(client)
+    # Request Twitch Capabilities (tags)
+    case Blur.IRC.request_twitch_capabilities(state.client) do
+      {:error, _} -> Logger.error("Not connected to Twitch")
+      :ok -> :ok
+    end
 
-    Logger.debug("Joining channels #{Enum.join(channels, ", ")}")
-    Blur.IRC.join_many(client, channels)
+    Logger.debug("Joining channels [#{Enum.join(state.autojoin, ", ")}]")
 
-    Logger.debug("Start channels ...")
-    Blur.IRC.Channel.start_link(client)
+    case autojoin(state.client, state.autojoin) do
+      {:error, :not_connected} -> Logger.error("Not connected to Twitch IRC.")
+      :ok -> :ok
+    end
 
-    Logger.debug("Start messages ...")
-    Blur.IRC.Message.start_link(client)
-
-    {:noreply, [client, channels]}
+    {:noreply, state}
   end
 
   # Drops unknown messages

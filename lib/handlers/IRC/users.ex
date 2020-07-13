@@ -16,15 +16,21 @@ defmodule Blur.IRC.Names do
     GenServer.start_link(__MODULE__, client)
   end
 
-  @impl true
+  @impl GenServer
   @spec init(client :: pid) :: {:ok, pid}
   def init(client) do
     ExIRC.Client.add_handler(client, self())
     {:ok, client}
   end
 
-  @impl true
-  @spec handle_info({:names_list, channel :: charlist, names :: list}, client :: pid) ::
+  @impl GenServer
+  @spec handle_info(
+          {:names_list, channel :: charlist, names :: charlist}
+          | {:joined, channel :: charlist, user :: %ExIRC.SenderInfo{}}
+          | {:parted, channel :: charlist, user :: %ExIRC.SenderInfo{}}
+          | {:mode, charlist, charlist, user :: %ExIRC.SenderInfo{}},
+          client :: pid
+        ) ::
           {:noreply, client :: pid}
   def handle_info({:names_list, channel, names}, state) do
     String.split(names, " ")
@@ -35,29 +41,24 @@ defmodule Blur.IRC.Names do
     {:noreply, state}
   end
 
-  @spec handle_info({:joined, channel :: charlist, name :: charlist}, client :: pid) ::
-          {:noreply, client :: pid}
-  def handle_info({:joined, channel, name}, state) do
-    Logger.debug("Joined #{channel} #{name}")
+  def handle_info({:joined, channel, user}, state) do
+    Logger.debug("#{user.nick} joined #{channel} ")
 
-    Channel.add_user(channel, name)
+    Channel.add_user(channel, user.nick)
 
     {:noreply, state}
   end
 
-  @spec handle_info({:parted, channel :: charlist, name :: charlist}, client :: pid) ::
-          {:noreply, client :: pid}
-  def handle_info({:parted, channel, name}, state) do
-    Logger.debug("Parted #{channel} #{name}")
+  def handle_info({:parted, channel, user}, state) do
+    Logger.debug("#{user.nick} parted #{channel}")
 
-    Channel.remove_user(channel, name)
+    Channel.remove_user(channel, user.nick)
 
     {:noreply, state}
   end
 
-  @spec handle_info({:mode, charlist, charlist}, client :: pid) :: {:noreply, client :: pid}
-  def handle_info({:mode, channel, op, name}, state) do
-    Logger.debug("#{channel} #{op} #{name}")
+  def handle_info({:mode, channel, op, user}, state) do
+    Logger.debug("#{channel} #{op} #{user.nick}")
     {:noreply, state}
   end
 

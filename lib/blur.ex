@@ -1,67 +1,66 @@
 defmodule Blur do
   @moduledoc """
   Access your bot through Blur
+
+  Client
+
+  Handlers
+  - Login
+  on_logon -> join_channels
+  - Connection
+  %ConnState{}
+  on_connection -> login
+  on_disconnection -> logoff
+  - Message
+  pool
+  - Channels
+  on_join -> add_channel
+  [Channel, Channel]
+  - Users
+  on_names -> add_users
+  on_user_join -> add_user
+  on_part -> remove_user
+  [User, User]
   """
 
   require Logger
 
   @doc """
-  Join a channel.
-
-  ## Examples
-      iex> Blur.join "#channel"
-      :ok
-  """
-  @spec join(channel :: binary) :: :ok | {:error, atom}
-  def join(channel),
-    do: join(:irc_client, channel)
-
-  @doc """
   Join a channel on the client IRC connection.
 
   ## Examples
-      iex> Blur.join client, "#channel"
-      :ok
+    
+    Blur.join :twitch, "#channel"
+    :ok
   """
-  @spec join(pid | atom, binary) :: :ok | {:error, atom}
+  @spec join(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
   def join(client, "#" <> _ = channel),
-    do: Blur.IRC.join(client, channel)
+    do: join(client, channel)
 
   def join(client, channel),
-    do: join(client, "#" <> channel)
+    do: Blur.IRC.join(client, channel)
 
   @doc """
   Leave a channel on the client IRC connection.
 
   ## Examples
-      iex> Blur.leave client, "#channel"
-      :ok
+      
+    Blur.leave :twitch, "#channel"
+    {:error, :not_logged_in}
   """
-  @spec leave(client :: pid, channel :: binary) :: :ok | {:error, atom}
+  @spec leave(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
   def leave(client, channel),
     do: Blur.IRC.part(client, channel)
-
-  @doc """
-  Leave a channel.
-
-  ## Examples
-      iex> Blur.leave "#channel"
-      :ok
-  """
-  @spec leave(channel :: binary) :: :ok | {:error, atom}
-  def leave(channel),
-    do: leave(:irc_client, channel)
 
   @doc """
   Say a message to the channel.
 
   ## Examples
-      iex> Blur.say "#channel", "a message to the channel"
-      :ok
+
+      Blur.say :twitch, "adattape"
   """
-  @spec say(channel :: charlist, msg :: charlist) :: :ok | {:error, atom}
-  def say(channel, msg),
-    do: Blur.IRC.say(:irc_client, channel, msg)
+  def say(client, channel, message),
+    do: Blur.IRC.say(client, channel, message)
 
   @doc """
   Get token from the environmental variables.
