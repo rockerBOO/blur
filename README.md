@@ -12,7 +12,7 @@ First, add Blur to your mix.exs dependencies:
 
 ```elixir
 def deps do
-  [{:blur, "~> 0.2"}]
+  [{:blur, "~> 0.2.1-beta3"}]
 end
 ```
 
@@ -22,15 +22,19 @@ Then, update your dependencies:
 $ mix deps.get
 ```
 
-To setup, the configuration options are in `.env`. `.env.example` is setup to show how to configure, and just rename to `.env`.
+Then, you'll want to start the Blur application. 
+
+```elixir
+	# [user, channels]
+	Blur.App.start_link(["800807", ["rockerboo"]])
+```
+
+You will need to authenticate with OAuth. This is set with the `TWITCH_CHAT_KEY` environmental variable. See [.env.example](.env.example) for all the variables. 
+
 
 ```elixir
 # The key generated from https://twitchapps.com/tmi/.
 export TWITCH_CHAT_KEY=oauth:
-
-# Username on Twitch for the Bot.
-# It needs to match to the user of the access token/chat key.
-export TWITCH_USERNAME=
 ```
 
 
