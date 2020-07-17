@@ -34,8 +34,7 @@ defmodule Blur.Mixfile do
 
   def application do
     [
-      applications: [:logger, :exirc],
-      mod: {Blur.App, ["800807", ["harbleu"]]}
+      applications: [:logger, :exirc]
     ]
   end
 

@@ -1,8 +1,8 @@
 defmodule Blur.App do
   use Supervisor
 
-  def start! do
-    Supervisor.start_link(__MODULE__, [], name: :blur)
+  def start_link([user, channel]) do
+    Supervisor.start_link(__MODULE__, [user, channel])
   end
 
   @spec start(atom, list) :: GenServer.on_start()
