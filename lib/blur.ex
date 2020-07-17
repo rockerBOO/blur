@@ -46,7 +46,6 @@ defmodule Blur do
   ## Examples
       
     Blur.leave :twitch, "#channel"
-    {:error, :not_logged_in}
   """
   @spec leave(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
   def leave(client, channel),

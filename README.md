@@ -6,6 +6,10 @@ Twitch Chat Bot
 ![Elixir CI](https://github.com/rockerBOO/blur/workflows/Elixir%20CI/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/rockerBOO/blur/badge.svg)](https://coveralls.io/github/rockerBOO/blur)
 
+**Note** This is under heavy changes. Things might break with each release as we solidify the API.
+
+This library will be a core component that will interact with IRC and have a bunch of helper commands to interact with IRC, WS and OBS connections.
+
 ## Install
 
 First, add Blur to your mix.exs dependencies:
@@ -25,8 +29,8 @@ $ mix deps.get
 Then, you'll want to start the Blur application. 
 
 ```elixir
-	# [user, channels]
-	Blur.App.start_link(["800807", ["rockerboo"]])
+# [user, channels]
+Blur.App.start_link(["800807", ["rockerboo"]])
 ```
 
 You will need to authenticate with OAuth. This is set with the `TWITCH_CHAT_KEY` environmental variable. See [.env.example](.env.example) for all the variables. 
@@ -37,4 +41,27 @@ You will need to authenticate with OAuth. This is set with the `TWITCH_CHAT_KEY`
 export TWITCH_CHAT_KEY=oauth:
 ```
 
+## Quick Start
 
+```sh-session
+iex -S mix
+
+iex> Blur.App.start_link(["800807", ["rockerboo"]])
+{:ok, <pid>}
+iex> Blur.say :blur, "rockerboo", "yo"
+:ok
+```
+
+## Usage
+
+Once the blur application is started you can access the process using the `:blur` atom.
+
+```elixir
+Blur.say(:blur, "rockerboo", "yo")
+```
+
+See the [Blur](lib/blur.ex) module for the current list of options.
+
+```elixir
+Blur.join(:blur, "rockerboo")
+```
