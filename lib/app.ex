@@ -17,8 +17,6 @@ defmodule Blur.App do
     Process.register(client, :twitchirc)
 
     children = [
-      {Blur.Channels, []},
-      {Blur.Users, []},
       {Blur.IRC.Connection, [:twitchirc, user]},
       {Blur.IRC.Login, [:twitchirc, channels]},
       {Blur.IRC.Channel, [:twitchirc]},

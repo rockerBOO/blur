@@ -33,8 +33,6 @@ defmodule Blur.IRC.Login do
   @impl true
   @spec handle_info(:logged_in, map) :: {:noreply, list}
   def handle_info(:logged_in, state) do
-    Logger.debug("Logged in as #{Blur.Env.fetch(:username)}")
-
     # Request Twitch Capabilities (tags)
     :ok = Blur.IRC.request_twitch_capabilities(state.client)
 
