@@ -6,8 +6,6 @@ defmodule Blur.IRC.Names do
   require Logger
   use GenServer
 
-  alias Blur.Channel
-
   @doc """
   Start name listener
   """
@@ -33,10 +31,7 @@ defmodule Blur.IRC.Names do
         ) ::
           {:noreply, client :: pid}
   def handle_info({:names_list, channel, names}, state) do
-    String.split(names, " ")
-    |> Enum.each(fn name ->
-      Channel.add_user(channel, name)
-    end)
+    Logger.debug("Names: #{channel} #{names}")
 
     {:noreply, state}
   end
@@ -44,21 +39,12 @@ defmodule Blur.IRC.Names do
   def handle_info({:joined, channel, user}, state) do
     Logger.debug("#{user.nick} joined #{channel} ")
 
-    Channel.add_user(channel, user.nick)
-
     {:noreply, state}
   end
 
   def handle_info({:parted, channel, user}, state) do
     Logger.debug("#{user.nick} parted #{channel}")
 
-    Channel.remove_user(channel, user.nick)
-
-    {:noreply, state}
-  end
-
-  def handle_info({:mode, channel, op, user}, state) do
-    Logger.debug("#{channel} #{op} #{user.nick}")
     {:noreply, state}
   end
 

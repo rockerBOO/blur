@@ -30,7 +30,7 @@ Then, you'll want to start the Blur application.
 
 ```elixir
 # [user, channels]
-Blur.App.start_link(["800807", ["rockerboo"]])
+Blur.App.start_link(["800807", ["#rockerboo"]])
 ```
 
 You will need to authenticate with OAuth. This is set with the `TWITCH_CHAT_KEY` environmental variable. See [.env.example](.env.example) for all the variables. 
@@ -46,22 +46,16 @@ export TWITCH_CHAT_KEY=oauth:
 ```sh-session
 iex -S mix
 
-iex> Blur.App.start_link(["800807", ["rockerboo"]])
+iex> Blur.App.start_link(["800807", ["#rockerboo"]])
 {:ok, <pid>}
-iex> Blur.say :blur, "rockerboo", "yo"
+iex> Blur.say "#rockerboo", "yo"
 :ok
 ```
 
 ## Usage
 
-Once the blur application is started you can access the process using the `:blur` atom.
-
 ```elixir
-Blur.say(:blur, "rockerboo", "yo")
+Blur.say("#rockerboo", "yo")
 ```
 
 See the [Blur](lib/blur.ex) module for the current list of options.
-
-```elixir
-Blur.join(:blur, "rockerboo")
-```
