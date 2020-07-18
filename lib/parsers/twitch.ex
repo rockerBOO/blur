@@ -8,8 +8,11 @@ defmodule Blur.Parser.Twitch do
 
   ## Examples
   """
-  @spec parse(msg :: binary) :: list
-  def parse(msg) do
-    String.split(msg, ";") |> Enum.map(fn s -> String.split(s, "=") end)
+  @spec parse_tags(msg :: binary) :: map
+  def parse_tags(msg) do
+    String.split(msg, ";")
+    |> Enum.map(fn s -> String.split(s, "=") end)
+    |> Enum.map(fn [k, v] -> %{k => v} end)
+    |> Enum.reduce(fn acc, m -> Map.merge(acc, m) end)
   end
 end

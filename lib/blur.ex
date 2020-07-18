@@ -30,36 +30,64 @@ defmodule Blur do
 
   ## Examples
     
-    Blur.join :twitch, "#channel"
+    Blur.join "#channel"
     :ok
   """
-  @spec join(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
-  def join(client, "#" <> _ = channel),
-    do: join(client, channel)
-
-  def join(client, channel),
-    do: Blur.IRC.join(client, channel)
+  @spec join(channel :: binary) :: :ok | {:error, atom}
+  def join(channel),
+    do: ExIRC.Client.join(:twitchirc, channel)
 
   @doc """
   Leave a channel on the client IRC connection.
 
   ## Examples
       
-    Blur.leave :twitch, "#channel"
+    Blur.leave "#channel"
   """
-  @spec leave(client :: GenServer.server(), channel :: binary) :: :ok | {:error, atom}
-  def leave(client, channel),
-    do: Blur.IRC.part(client, channel)
+  @spec leave(channel :: binary) :: :ok | {:error, atom}
+  def leave(channel),
+    do: ExIRC.Client.part(:twitchirc, channel)
 
   @doc """
   Say a message to the channel.
 
   ## Examples
-
-      Blur.say :twitch, "adattape"
+      Blur.say "#rockerboo", "yo"
   """
-  def say(client, channel, message),
-    do: Blur.IRC.say(client, channel, message)
+  @spec say(channel :: binary, message :: binary) ::
+          :ok | {:error, atom}
+  def say(channel, message),
+    do: ExIRC.Client.msg(:twitchirc, :privmsg, channel, message)
+
+  @doc """
+  List who is in the channel. This is not completely accurate.
+
+  ## Examples
+      Blur.users "#rockerboo"
+  """
+  @spec users(channel :: binary) :: list | {:error, atom}
+  def users(channel),
+    do: ExIRC.Client.channel_users(:twitchirc, channel)
+
+  @doc """
+  List channels we have joined.
+
+  ## Examples
+      Blur.channels 
+  """
+  @spec channels() :: list | {:error, atom}
+  def channels(),
+    do: ExIRC.Client.channels(:twitchirc)
+
+  @doc """
+  Check if we are logged on.
+
+  ## Examples
+      Blur.is_logged_on? 
+  """
+  @spec is_logged_on?() :: boolean
+  def is_logged_on?(),
+    do: ExIRC.Client.is_logged_on?(:twitchirc)
 
   @doc """
   Get token from the environmental variables.

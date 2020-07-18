@@ -36,17 +36,11 @@ defmodule Blur.IRC.Login do
     Logger.debug("Logged in as #{Blur.Env.fetch(:username)}")
 
     # Request Twitch Capabilities (tags)
-    case Blur.IRC.request_twitch_capabilities(state.client) do
-      {:error, _} -> Logger.error("Not connected to Twitch")
-      :ok -> :ok
-    end
+    :ok = Blur.IRC.request_twitch_capabilities(state.client)
 
     Logger.debug("Joining channels [#{Enum.join(state.autojoin, ", ")}]")
 
-    case autojoin(state.client, state.autojoin) do
-      {:error, :not_connected} -> Logger.error("Not connected to Twitch IRC.")
-      :ok -> :ok
-    end
+    :ok = autojoin(state.client, state.autojoin)
 
     {:noreply, state}
   end

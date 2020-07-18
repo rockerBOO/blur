@@ -2,7 +2,7 @@ defmodule Blur.App do
   use Supervisor
 
   def start_link([user, channel]) do
-    Supervisor.start_link(__MODULE__, [user, channel])
+    Supervisor.start_link(__MODULE__, [user, channel], name: :blur)
   end
 
   @spec start(atom, list) :: GenServer.on_start()
@@ -14,14 +14,15 @@ defmodule Blur.App do
   def init([user, channels]) do
     {:ok, client} = ExIRC.start_link!()
 
+    Process.register(client, :twitchirc)
+
     children = [
       {Blur.Channels, []},
       {Blur.Users, []},
-      # {Blur.IRC.Client, [client]},
-      {Blur.IRC.Connection, [client, user]},
-      {Blur.IRC.Login, [client, channels]},
-      {Blur.IRC.Channel, [client]},
-      {Blur.IRC.Message, [client]}
+      {Blur.IRC.Connection, [:twitchirc, user]},
+      {Blur.IRC.Login, [:twitchirc, channels]},
+      {Blur.IRC.Channel, [:twitchirc]},
+      {Blur.IRC.Message, [:twitchirc]}
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
