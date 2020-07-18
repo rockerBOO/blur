@@ -1,7 +1,7 @@
 defmodule Blur.Mixfile do
   use Mix.Project
 
-  @version "0.2.1-beta3"
+  @version "0.2.1-rc1"
 
   def project do
     [

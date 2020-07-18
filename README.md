@@ -16,7 +16,7 @@ First, add Blur to your mix.exs dependencies:
 
 ```elixir
 def deps do
-  [{:blur, "~> 0.2.1-beta3"}]
+  [{:blur, "~> 0.2.1-rc1"}]
 end
 ```
 
