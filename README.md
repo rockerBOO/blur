@@ -26,19 +26,19 @@ Then, update your dependencies:
 $ mix deps.get
 ```
 
-Then, you'll want to start the Blur application. 
-
-```elixir
-# [user, channels]
-Blur.App.start_link(["800807", ["#rockerboo"]])
-```
-
 You will need to authenticate with OAuth. This is set with the `TWITCH_CHAT_KEY` environmental variable. See [.env.example](.env.example) for all the variables. 
 
 
 ```elixir
 # The key generated from https://twitchapps.com/tmi/.
 export TWITCH_CHAT_KEY=oauth:
+```
+
+Then, you'll want to start the Blur application. 
+
+```elixir
+# [user, channels]
+Blur.App.start_link(["800807", ["#rockerboo"]])
 ```
 
 ## Quick Start
