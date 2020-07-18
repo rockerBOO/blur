@@ -29,20 +29,15 @@ defmodule Blur.IRC.Connection do
   @spec init(%State{}) :: {:ok, %State{}}
   def init(state) do
     ExIRC.Client.add_handler(state.client, self())
-    Blur.IRC.connect!(state.client, state.host, state.port)
+    ExIRC.Client.connect!(state.client, state.host, state.port)
 
     {:ok, state}
   end
 
   def login(client, nick, token) do
     # Login to IRC
-    case Blur.IRC.login(client, nick, token) do
-      {:error, :not_logged_in} ->
-        Logger.info("Logging in with #{nick} failed.")
 
-      :ok ->
-        :ok
-    end
+    :ok = ExIRC.Client.logon(client, token, nick, nick, nick)
   end
 
   @impl true
@@ -69,6 +64,13 @@ defmodule Blur.IRC.Connection do
   # Handle tagged message disconnect
   def handle_info({:disconnected, "@" <> _cmd, _msg}, state) do
     Logger.debug(":disconnected")
+    {:noreply, state}
+  end
+
+  # %ExIRC.SenderInfo{}
+  def handle_info({:notice, msg, sender}, state) do
+    Logger.error("notice #{msg}")
+
     {:noreply, state}
   end
 

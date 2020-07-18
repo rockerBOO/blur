@@ -89,13 +89,13 @@ defmodule Blur.IRC do
       :ok
   """
   @spec join(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
-  def join(client, "#" <> _ = channel) do
+  def join(client, channel) do
     Logger.debug("Join #{channel}")
     ExIRC.Client.join(client, channel)
   end
 
   def join(client, channel),
-    do: join(client, "#" <> channel)
+    do: join(client, channel)
 
   @doc """
   Part from IRC channel.
@@ -105,23 +105,24 @@ defmodule Blur.IRC do
       :ok
   """
   @spec part(client :: pid | atom, channel :: binary) :: :ok | {:error, atom}
-  def part(client, "#" <> _ = channel) do
+  def part(client, channel) do
     Logger.debug("Part #{channel}")
     ExIRC.Client.part(client, channel)
   end
 
   def part(client, channel),
-    do: part(client, "#" <> channel)
+    do: part(client, channel)
 
   @doc """
   Send a message to the channel
 
   ## Example
-      Blur.IRC.say client, "#rockerboo", "Hello"
+      Blur.IRC.say :twitchirc, "#rockerboo", "Hello"
       :ok
   """
   @spec say(client :: pid | atom, channel :: binary, msg :: binary) :: :ok | {:error, atom}
-  def say(client, "#" <> _ = channel, msg) do
+  def say(client, channel, msg) do
+    Logger.debug("Say #{client} #{channel}: #{msg}")
     ExIRC.Client.msg(client, :privmsg, channel, msg)
   end
 

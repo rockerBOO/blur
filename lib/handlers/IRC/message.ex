@@ -23,9 +23,9 @@ defmodule Blur.IRC.Message do
     {:ok, client}
   end
 
-  @spec parse_message(channel :: binary, user :: binary, msg :: binary) :: :ok
-  def parse_message(channel, user, msg) do
-    Logger.debug("Parsing message #{channel} #{user}: #{msg}")
+  @spec parse_message(channel :: binary, user :: binary, msg :: binary, tags :: map) :: :ok
+  def parse_message(channel, _, msg, tags \\ %{}) do
+    Logger.debug("#{channel} #{tags["display-name"]}: #{msg}")
     :ok
   end
 
@@ -68,10 +68,10 @@ defmodule Blur.IRC.Message do
   end
 
   # Tagged message
-  def handle_info({:unrecognized, "@" <> _, msg}, state) do
+  def handle_info({:unrecognized, "@" <> code, msg}, state) do
     case Blur.IRC.TwitchTag.parse_tagged_message(msg) do
       %{args: [channel, message], cmd: "PRIVMSG", user: user} ->
-        parse_message(channel, user, message)
+        parse_message(channel, user, message, Blur.Parser.Twitch.parse_tags(code))
 
       _ ->
         nil
