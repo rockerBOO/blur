@@ -7,7 +7,7 @@ defmodule Blur.Mixfile do
     [
       app: :blur,
       version: @version,
-      elixir: "~> 1.0",
+      elixir: "~> 1.6",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -40,7 +40,7 @@ defmodule Blur.Mixfile do
 
   defp deps do
     [
-      {:exirc, "~> 1.1"},
+      {:exirc, "~> 2.0"},
       {:poison, "~> 3.1"},
       {:excoveralls, "~> 0.13", only: :test},
       {:mix_test_watch, "~> 1.0", only: :dev, runtime: false},

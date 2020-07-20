@@ -29,7 +29,6 @@ defmodule Blur.IRC.Connection do
   @spec init(%State{}) :: {:ok, %State{}}
   def init(state) do
     ExIRC.Client.add_handler(state.client, self())
-    ExIRC.Client.connect!(state.client, state.host, state.port)
 
     {:ok, state}
   end
@@ -68,7 +67,7 @@ defmodule Blur.IRC.Connection do
   end
 
   # %ExIRC.SenderInfo{}
-  def handle_info({:notice, msg, sender}, state) do
+  def handle_info({:notice, msg, _sender}, state) do
     Logger.error("notice #{msg}")
 
     {:noreply, state}

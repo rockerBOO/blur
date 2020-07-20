@@ -1,7 +1,7 @@
 defmodule Blur.AppTest do
-  # test "that the blur supervisor starts" do
-  #   {:ok, pid} = Blur.App.start(:normal, ["", []])
+  use ExUnit.Case
 
-  #   assert pid
-  # end
+  test "that the blur supervisor starts" do
+    {:ok, pid} = Blur.App.start(:normal, ["", []])
+  end
 end
