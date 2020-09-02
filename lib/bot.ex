@@ -69,7 +69,7 @@ defmodule Blur.Bot do
       end
 
       @def """
-      Handle messages coming into the bot.
+      Handle messages/notices coming into the bot.
       """
       def handle_in(%Blur.Message{} = msg, state) do
         {:dispatch, msg, state}

@@ -4,6 +4,11 @@ erl_crash.dump
 *.ez
 .env
 
+cover/
+doc/
+
+.iex.exs
+
 Mnesia.*
 data/*
 dump.rdb

@@ -1,5 +1,4 @@
-Blur
-====
+# Blur
 
 Twitch Chat Bot
 
@@ -10,52 +9,59 @@ Twitch Chat Bot
 
 This library will be a core component that will interact with IRC and have a bunch of helper commands to interact with IRC, WS and OBS connections.
 
+Process Structure:
+
+```
+- Blur.App
+  - Blur.Supervisor
+    - Blur.BotSupervisor
+      - Blur.BotExample
+				- Blur.Adapters.IRC
+    - Blur.ResolverSupervisor
+      - Blur.HelloExampleResolver
+```
+
+This allows many bots and many resolvers with proper dynamic supervision.
+
+Bots handle their own adapters with `@adapter`. Currently only IRC is supported.
+
 ## Install
 
 First, add Blur to your mix.exs dependencies:
 
 ```elixir
 def deps do
-  [{:blur, "~> 0.2.1-rc1"}]
+  [{:blur, "~> 0.3.0-beta1"}]
 end
 ```
 
-Then, update your dependencies:sh
+Then, update your dependencies:
 
 ```sh-session
 $ mix deps.get
 ```
 
-You will need to authenticate with OAuth. This is set with the `TWITCH_CHAT_KEY` environmental variable. See [.env.example](.env.example) for all the variables. 
+You will need to authenticate with OAuth. This is set with the `TWITCH_CHAT_KEY` environmental variable. See [.env.example](.env.example) for all the variables.
 
-
-```elixir
+```sh-script
 # The key generated from https://twitchapps.com/tmi/.
 export TWITCH_CHAT_KEY=oauth:
 ```
 
-Then, you'll want to start the Blur application. 
+Then, you can start the Blur application.
 
 ```elixir
-# [user, channels]
-Blur.App.start_link(["800807", ["#rockerboo"]])
-```
-
-## Quick Start
-
-```sh-session
-iex -S mix
-
-iex> Blur.App.start_link(["800807", ["#rockerboo"]])
-{:ok, <pid>}
-iex> Blur.say "#rockerboo", "yo"
-:ok
+def application do
+    [
+      applications: [:blur],
+    ]
+end
 ```
 
 ## Usage
 
 ```elixir
-Blur.say("#rockerboo", "yo")
-```
+Blur.start_bot(bot, opts)
 
-See the [Blur](lib/blur.ex) module for the current list of options.
+Blur.stop_bot(bot)
+```
