@@ -1,7 +1,7 @@
 defmodule Blur.Mixfile do
   use Mix.Project
 
-  @version "0.2.1-rc1"
+  @version "0.3.0-beta1"
 
   def project do
     [
@@ -34,7 +34,8 @@ defmodule Blur.Mixfile do
 
   def application do
     [
-      applications: [:logger, :exirc]
+      applications: [:logger, :exirc],
+      mod: {Blur.App, []}
     ]
   end
 
