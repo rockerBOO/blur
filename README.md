@@ -8,6 +8,8 @@ Twitch Chat Bot
 
 **Note** This is under heavy changes. Things might break with each release as we solidify the API.
 
+**Note** See 0.3.0-beta branch for the most up to date code. Currently missing some functionality to get it working.
+
 This library will be a core component that will interact with IRC and have a bunch of helper commands to interact with IRC, WS and OBS connections.
 
 ## Install
