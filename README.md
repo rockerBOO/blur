@@ -22,7 +22,7 @@ def deps do
 end
 ```
 
-Then, update your dependencies:
+Then, update your dependencies:sh
 
 ```sh-session
 $ mix deps.get

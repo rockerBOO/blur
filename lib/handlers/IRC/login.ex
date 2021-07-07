@@ -24,7 +24,7 @@ defmodule Blur.IRC.Login do
 
   @spec autojoin(client :: GenServer.server(), channels :: list) :: :ok | {:error, atom}
   def autojoin(client, channels) do
-    client |> Blur.IRC.join_many(channels)
+    channels |> Enum.each(&ExIRC.Client.join(client, &1))
   end
 
   @doc """

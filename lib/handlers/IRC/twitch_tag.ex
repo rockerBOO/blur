@@ -3,14 +3,14 @@ defmodule Blur.IRC.TwitchTag do
   Handle all the following tags. 
   https://dev.twitch.tv/docs/irc/tags/
 
-  # User
+  ## User
   display-name: The user’s display name
   badge-info: indicate the exact number of months the user has been a subscriber. 
   badges: Comma-separated list of chat badges and the version of each badge 
   color: Hexadecimal RGB color code; the empty string if it is never set.
   user-id: The user's ID.
 
-  # Messages
+  ## Messages
   bits: (Sent only for Bits messages) The amount of cheer/Bits employed by the user.
   emote-sets: A comma-separated list of emotes, belonging to one or more emote sets.
   emotes: Information to replace text in the message with emote images. This can be empty.
@@ -18,17 +18,17 @@ defmodule Blur.IRC.TwitchTag do
   room-id: The channel ID.
   tmi-sent-ts: Timestamp when the server received the message.
 
-  # Channel
+  ## Channel
   followers-only: Followers-only mode. If enabled, controls which followers can chat. Valid values: -1 (disabled), 0 (all followers can chat), or a non-negative integer (only users following for at least the specified number of minutes can chat).
   r9k: R9K mode. If enabled, messages with more than 9 characters must be unique. Valid values: 0 (disabled) or 1 (enabled).
   slow: The number of seconds a chatter without moderator privileges must wait between sending messages.
   subs-only: Subscribers-only mode. If enabled, only subscribers and moderators can chat. Valid values: 0 (disabled) or 1 (enabled).
 
-  # User Notice
+  ## User Notice
   msg-id: The type of notice (not the ID). Valid values: sub, resub, subgift, anonsubgift, submysterygift, giftpaidupgrade, rewardgift, anongiftpaidupgrade, raid, unraid, ritual, bitsbadgetier.
   system-msg: The message printed in chat along with this notice.
 
-  # Message Params
+  ## Message Params
   msg-param-cumulative-months   (Sent only on sub, resub) The total number of months the user has subscribed. This is the same as msg-param-months but sent for different types of user notices.
   msg-param-displayName   (Sent only on raid) The display name of the source user raiding this channel.
   msg-param-login   (Sent on only raid) The name of the source user raiding this channel.
@@ -54,8 +54,7 @@ defmodule Blur.IRC.TwitchTag do
   """
   @spec to_map(cmd :: binary) :: map
   def to_map(cmd) do
-    Blur.Parser.Twitch.parse(cmd)
-    |> Enum.reduce(%{}, fn [k, v], acc -> Map.put(acc, k, v) end)
+    Blur.Parser.Twitch.parse_tags(cmd)
   end
 
   @doc """

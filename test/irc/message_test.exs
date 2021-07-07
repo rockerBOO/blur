@@ -18,7 +18,7 @@ defmodule Blur.IRC.MessageTest do
     end
 
     test "for message to channel" do
-      irc_client = start_supervised({ExIRC.Client, []})
+      irc_client = start_supervised!({ExIRC.Client, []})
 
       {:noreply, state} =
         Message.handle_info(
@@ -32,7 +32,7 @@ defmodule Blur.IRC.MessageTest do
 
   describe "on unrecognized " do
     test "for code 366" do
-      irc_client = start_supervised({ExIRC.Client, []})
+      irc_client = start_supervised!({ExIRC.Client, []})
 
       {:noreply, state} =
         Message.handle_info(
@@ -44,7 +44,7 @@ defmodule Blur.IRC.MessageTest do
     end
 
     test "for code CAP" do
-      irc_client = start_supervised({ExIRC.Client, []})
+      irc_client = start_supervised!({ExIRC.Client, []})
 
       {:noreply, state} =
         Message.handle_info(
